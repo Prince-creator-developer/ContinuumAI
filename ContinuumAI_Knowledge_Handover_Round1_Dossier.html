@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ContinuumAI - Round 1 Plan: Knowledge Handover Engine</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap');
+
+    @page {
+        size: 297mm 210mm; /* A4 Landscape */
+        margin: 0;
+    }
+
+    * {
+        box-sizing: border-box;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    body {
+        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        color: #0f172a;
+        background-color: #f8fafc;
+        margin: 0;
+        padding: 0;
+    }
+
+    .slide {
+        width: 297mm;
+        height: 210mm;
+        page-break-after: always;
+        break-after: page;
+        box-sizing: border-box;
+        padding: 13mm 18mm 12mm 18mm;
+        position: relative;
+        overflow: hidden;
+        background: #ffffff;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .slide:last-child {
+        page-break-after: auto;
+        break-after: auto;
+    }
+
+    /* Top Navigation Header */
+    .slide-top-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 2px solid #e2e8f0;
+        padding-bottom: 8px;
+        margin-bottom: 12px;
+    }
+
+    .nav-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .badge-pill {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 8pt;
+        font-weight: 700;
+        padding: 4px 12px;
+        border-radius: 9999px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+
+    .badge-indigo { color: #4338ca; background: #e0e7ff; border: 1.5px solid #c7d2fe; }
+    .badge-emerald { color: #065f46; background: #d1fae5; border: 1.5px solid #a7f3d0; }
+    .badge-amber { color: #92400e; background: #fef3c7; border: 1.5px solid #fde68a; }
+    .badge-rose { color: #9f1239; background: #ffe4e6; border: 1.5px solid #fecdd3; }
+    .badge-cyan { color: #0e7490; background: #cffafe; border: 1.5px solid #a5f3fc; }
+    .badge-violet { color: #6d28d9; background: #ede9fe; border: 1.5px solid #ddd6fe; }
+
+    .team-nav {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 8.8pt;
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    /* Headings */
+    .slide-heading-block {
+        margin-bottom: 14px;
+    }
+
+    .slide-title {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 20pt;
+        font-weight: 800;
+        color: #0f172a;
+        margin: 0 0 4px 0;
+        letter-spacing: -0.5px;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+    }
+
+    .title-accent { color: #2563eb; }
+    .title-purple { color: #7c3aed; }
+    .title-emerald { color: #059669; }
+
+    .slide-subtitle {
+        font-size: 10pt;
+        color: #475569;
+        margin: 0;
+        font-weight: 500;
+        line-height: 1.4;
+    }
+
+    /* Slide Content Area that expands to fill space */
+    .slide-content-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        margin-bottom: 8px;
+    }
+
+    /* Grids */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; flex: 1; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; flex: 1; }
+    .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; flex: 1; }
+    .grid-23 { display: grid; grid-template-columns: 5fr 7fr; gap: 16px; flex: 1; }
+    .grid-32 { display: grid; grid-template-columns: 7fr 5fr; gap: 16px; flex: 1; }
+    .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; flex: 1; }
+
+    /* Cards */
+    .card {
+        background: #ffffff;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 9px;
+        padding: 14px 16px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    .card-accent-blue { border-left: 4.5px solid #2563eb; background: #f8faff; }
+    .card-accent-emerald { border-left: 4.5px solid #10b981; background: #f0fdf4; }
+    .card-accent-amber { border-left: 4.5px solid #f59e0b; background: #fffbeb; }
+    .card-accent-rose { border-left: 4.5px solid #ef4444; background: #fef2f2; }
+    .card-accent-purple { border-left: 4.5px solid #8b5cf6; background: #fbf7ff; }
+    .card-accent-cyan { border-left: 4.5px solid #06b6d4; background: #f0fdfa; }
+
+    .card-title {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 11pt;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0 0 6px 0;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+    }
+
+    .card-desc {
+        font-size: 8.8pt;
+        color: #334155;
+        line-height: 1.52;
+        margin: 0;
+    }
+
+    .card-highlight {
+        background: #f1f5f9;
+        border-radius: 6px;
+        padding: 8px 10px;
+        margin-top: 8px;
+        font-size: 8.3pt;
+        color: #1e293b;
+        line-height: 1.45;
+    }
+
+    /* Lists */
+    ul.feature-list {
+        margin: 5px 0 0 0;
+        padding-left: 18px;
+        font-size: 8.8pt;
+        color: #334155;
+        line-height: 1.5;
+    }
+
+    ul.feature-list li {
+        margin-bottom: 5px;
+    }
+
+    ul.feature-list strong {
+        color: #0f172a;
+    }
+
+    /* Tables */
+    table.compact-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 8.2pt;
+        margin-top: 6px;
+    }
+
+    table.compact-table th {
+        background: #f1f5f9;
+        color: #0f172a;
+        font-weight: 700;
+        text-align: left;
+        padding: 7px 9px;
+        border: 1px solid #cbd5e1;
+    }
+
+    table.compact-table td {
+        padding: 7px 9px;
+        border: 1px solid #e2e8f0;
+        color: #334155;
+        line-height: 1.45;
+    }
+
+    table.compact-table tr:nth-child(even) {
+        background: #f8fafc;
+    }
+
+    /* Workflow Step Boxes */
+    .step-box {
+        background: #ffffff;
+        border: 1.5px solid #cbd5e1;
+        border-radius: 8px;
+        padding: 10px 10px;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .step-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 5px;
+    }
+
+    .step-num {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 8.2pt;
+        font-weight: 800;
+        color: #ffffff;
+        background: #2563eb;
+        padding: 2px 7px;
+        border-radius: 5px;
+    }
+
+    .step-name {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 10.5pt;
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+    /* Footer */
+    .slide-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1.5px solid #e2e8f0;
+        padding-top: 7px;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 7.8pt;
+        color: #64748b;
+    }
+
+    /* FRONT COVER PAGE SPECIFIC STYLES */
+    .cover-slide {
+        background: radial-gradient(circle at 80% 20%, #eff6ff 0%, #ffffff 50%, #f8fafc 100%);
+        padding: 16mm 22mm 14mm 22mm;
+    }
+
+    .cover-header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 2px solid #cbd5e1;
+        padding-bottom: 10px;
+    }
+
+    .cover-main-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        padding: 12px 0;
+    }
+
+    .cover-title-group {
+        text-align: center;
+    }
+
+    .cover-main-title {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 34pt;
+        font-weight: 800;
+        color: #0f172a;
+        letter-spacing: -1px;
+        line-height: 1.15;
+        margin: 0 0 6px 0;
+    }
+
+    .cover-subtitle-text {
+        font-size: 13pt;
+        color: #2563eb;
+        font-weight: 700;
+        letter-spacing: -0.2px;
+        margin: 0 0 8px 0;
+    }
+
+    .cover-problem-tagline {
+        font-size: 10pt;
+        color: #475569;
+        max-width: 900px;
+        margin: 0 auto;
+        line-height: 1.5;
+        font-weight: 500;
+    }
+
+    .cover-diagram-container {
+        background: #ffffff;
+        border: 1.5px solid #cbd5e1;
+        border-radius: 10px;
+        padding: 12px 18px;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03);
+        margin: 8px 0;
+    }
+
+    .cover-team-strip {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 16px;
+    }
+
+    .cover-team-card {
+        background: #ffffff;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 10px 14px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1: BRAND-NEW FRONT COVER PAGE -->
+<div class="slide cover-slide">
+    <div class="cover-header-row">
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <span class="badge-pill badge-indigo">HACKATHON CHALLENGE BRIEF</span>
+            <span class="badge-pill badge-emerald">ROUND 1: THE PLAN</span>
+            <span class="badge-pill badge-cyan">WE CODE CODERS TRACK</span>
+        </div>
+        <div class="team-nav" style="font-size: 9.5pt;">
+            TEAM NAME: <span style="color: #2563eb; font-weight: 800;">VALERION CODERS</span>
+        </div>
+    </div>
+
+    <div class="cover-main-body">
+        <div class="cover-title-group">
+            <h1 class="cover-main-title">
+                <span style="color: #2563eb;">ContinuumAI</span>
+            </h1>
+            <div class="cover-subtitle-text">
+                Intelligent Knowledge Handover & Organizational Continuity Engine
+            </div>
+            <div class="cover-problem-tagline">
+                <strong>Challenge Focus:</strong> <em>"Prevent Critical Knowledge From Leaving With People: Build a system that converts scattered project activity into a usable, verified, and role-appropriate handover when a team member leaves."</em>
+            </div>
+        </div>
+
+        <!-- TOPIC RELATED ARCHITECTURAL FLOW FIGURE (INLINE SVG) -->
+        <div class="cover-diagram-container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-family: 'Space Grotesk'; font-size: 8.5pt; font-weight: 700; color: #1e293b; text-transform: uppercase; letter-spacing: 0.5px;">
+                    Fig 1.0: End-to-End Autonomous Continuity Reconstruction & Verification Model
+                </span>
+                <span class="badge-pill badge-emerald" style="font-size: 7pt; padding: 2px 8px;">100% EVIDENCE-ANCHORED • ZERO SPECULATION</span>
+            </div>
+            
+            <svg viewBox="0 0 960 145" style="width: 100%; height: auto; display: block;">
+                <!-- Step 1 Box: Ingestion -->
+                <rect x="10" y="15" width="180" height="115" rx="8" fill="#f0f9ff" stroke="#0284c7" stroke-width="1.8"/>
+                <text x="100" y="38" font-family="'Space Grotesk', sans-serif" font-size="10.5" font-weight="700" fill="#0369a1" text-anchor="middle">SCATTERED EXHAUST</text>
+                <text x="100" y="58" font-family="'Plus Jakarta Sans', sans-serif" font-size="8" fill="#475569" text-anchor="middle">• Git Commits, Diffs & PRs</text>
+                <text x="100" y="74" font-family="'Plus Jakarta Sans', sans-serif" font-size="8" fill="#475569" text-anchor="middle">• Jira / Linear Task Boards</text>
+                <text x="100" y="90" font-family="'Plus Jakarta Sans', sans-serif" font-size="8" fill="#475569" text-anchor="middle">• Slack / Discord Chats</text>
+                <text x="100" y="112" font-family="'JetBrains Mono', monospace" font-size="7.5" font-weight="700" fill="#0284c7" text-anchor="middle">[Presidio Redacted]</text>
+
+                <!-- Arrow 1 -->
+                <path d="M 195 72 L 235 72" fill="none" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrowhead)"/>
+
+                <!-- Step 2 Box: Temporal AST & Graph -->
+                <rect x="240" y="15" width="200" height="115" rx="8" fill="#faf5ff" stroke="#7c3aed" stroke-width="1.8"/>
+                <text x="340" y="38" font-family="'Space Grotesk', sans-serif" font-size="10.5" font-weight="700" fill="#6d28d9" text-anchor="middle">TEMPORAL DECISION AST</text>
+                <text x="340" y="58" font-family="'Plus Jakarta Sans', sans-serif" font-size="8" fill="#475569" text-anchor="middle">• Implicit ADR Extraction</text>
+                <text x="340" y="74" font-family="'Plus Jakarta Sans', sans-serif" font-size="8" fill="#475569" text-anchor="middle">• Unmerged Branches & WIP</text>
+                <text x="340" y="90" font-family="'Plus Jakarta Sans', sans-serif" font-size="8" fill="#475569" text-anchor="middle">• Directional Causal Graph</text>
+                <text x="340" y="112" font-family="'JetBrains Mono', monospace" font-size="7.5" font-weight="700" fill="#7c3aed" text-anchor="middle">[Neo4j + NetworkX Engine]</text>
+
+                <!-- Arrow 2 -->
+                <path d="M 445 72 L 485 72" fill="none" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrowhead)"/>
+
+                <!-- Step 3 Box: Verification & Conflict Resolver -->
+                <rect x="490" y="15" width="200" height="115" rx="8" fill="#fffbeb" stroke="#d97706" stroke-width="1.8"/>
+                <text x="590" y="38" font-family="'Space Grotesk', sans-serif" font-size="10.5" font-weight="700" fill="#b45309" text-anchor="middle">VERIFICATION & CONFLICT</text>
+                <text x="590" y="58" font-family="'Plus Jakarta Sans', sans-serif" font-size="8" fill="#475569" text-anchor="middle">• Line-Level Citation Pinning</text>
+                <text x="590" y="74" font-family="'Plus Jakarta Sans', sans-serif" font-size="8" fill="#475569" text-anchor="middle">• Cross-Source Conflict Flags</text>
+                <text x="590" y="90" font-family="'Plus Jakarta Sans', sans-serif" font-size="8" fill="#475569" text-anchor="middle">• Knowledge Gap Surfacing</text>
+                <text x="590" y="112" font-family="'JetBrains Mono', monospace" font-size="7.5" font-weight="700" fill="#d97706" text-anchor="middle">[TRE Anti-Hallucination]</text>
+
+                <!-- Arrow 3 -->
+                <path d="M 695 72 L 735 72" fill="none" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrowhead)"/>
+
+                <!-- Step 4 Box: Role Handover & Cockpit -->
+                <rect x="740" y="15" width="210" height="115" rx="8" fill="#f0fdf4" stroke="#059669" stroke-width="1.8"/>
+                <text x="845" y="38" font-family="'Space Grotesk', sans-serif" font-size="10.5" font-weight="700" fill="#047857" text-anchor="middle">VERIFIED CONTINUATION</text>
+                <text x="845" y="58" font-family="'Plus Jakarta Sans', sans-serif" font-size="8" fill="#475569" text-anchor="middle">• Role Scopes: Dev, PM, External</text>
+                <text x="845" y="74" font-family="'Plus Jakarta Sans', sans-serif" font-size="8" fill="#475569" text-anchor="middle">• "First 30 Days" Priority Board</text>
+                <text x="845" y="90" font-family="'Plus Jakarta Sans', sans-serif" font-size="8" fill="#475569" text-anchor="middle">• Grounded "Ask Handover" RAG</text>
+                <text x="845" y="112" font-family="'JetBrains Mono', monospace" font-size="7.5" font-weight="700" fill="#059669" text-anchor="middle">[Two-Party Signed Ledger]</text>
+
+                <!-- Marker definition -->
+                <defs>
+                    <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                        <polygon points="0 0, 8 3, 0 6" fill="#64748b"/>
+                    </marker>
+                </defs>
+            </svg>
+        </div>
+
+        <!-- TEAM PARTICIPANTS & SUBMISSION INFO STRIP -->
+        <div class="cover-team-strip">
+            <div class="cover-team-card" style="border-left: 4px solid #2563eb;">
+                <div style="font-size: 7.2pt; font-family: 'JetBrains Mono'; color: #64748b; font-weight: 700; text-transform: uppercase;">Team Lead & AI Architect</div>
+                <div style="font-family: 'Space Grotesk'; font-size: 11pt; font-weight: 800; color: #0f172a; margin: 2px 0;">Prince Kumar</div>
+                <div style="font-size: 7.8pt; color: #475569; line-height: 1.4;">LangGraph Orchestration, Temporal Graph RAG, Verification Algorithms & Technical Architecture</div>
+            </div>
+
+            <div class="cover-team-card" style="border-left: 4px solid #7c3aed;">
+                <div style="font-size: 7.2pt; font-family: 'JetBrains Mono'; color: #64748b; font-weight: 700; text-transform: uppercase;">Full-Stack & UI/UX Specialist</div>
+                <div style="font-family: 'Space Grotesk'; font-size: 11pt; font-weight: 800; color: #0f172a; margin: 2px 0;">Yash Sharma</div>
+                <div style="font-size: 7.8pt; color: #475569; line-height: 1.4;">Next.js 14 Application, Review & Sign-Off Cockpit, Interactive Citation Inspector & UI Systems</div>
+            </div>
+
+            <div class="cover-team-card" style="border-left: 4px solid #059669;">
+                <div style="font-size: 7.2pt; font-family: 'JetBrains Mono'; color: #64748b; font-weight: 700; text-transform: uppercase;">Registered Team & Delivery Target</div>
+                <div style="font-family: 'Space Grotesk'; font-size: 11pt; font-weight: 800; color: #0f172a; margin: 2px 0;">Valerion Coders</div>
+                <div style="font-size: 7.8pt; color: #475569; line-height: 1.4;">Targeting 100/100 Evaluation across all 5 Rubric Criteria • Functional Round 2 MVP Ready to Demo</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-footer">
+        <span>CONTINUUMAI • VALERION CODERS</span>
+        <span>HACKATHON CHALLENGE BRIEF • THREE-ROUND CHALLENGE</span>
+        <span>COVER PAGE • SLIDE 01 / 08</span>
+    </div>
+</div>
+
+<!-- SLIDE 2: UNDERSTANDING THE PROBLEM STATEMENT & TARGET USERS (25 PTS) -->
+<div class="slide">
+    <div class="slide-top-nav">
+        <div class="nav-left">
+            <span class="badge-pill badge-rose">CRITERION 1 — 25 POINTS</span>
+            <span class="badge-pill badge-indigo">PROBLEM DECOMPOSITION</span>
+        </div>
+        <div class="team-nav">RUBRIC: UNDERSTANDING OF PROBLEM & AFFECTED USERS</div>
+    </div>
+
+    <div class="slide-heading-block">
+        <h1 class="slide-title">
+            <span class="title-accent">Deep Problem Understanding:</span> The Tacit Knowledge Exfiltration Crisis
+        </h1>
+        <p class="slide-subtitle">
+            Why tribal context evaporates when engineers leave, why static wikis fail, and our defined solution boundary
+        </p>
+    </div>
+
+    <div class="slide-content-body">
+        <div class="grid-3" style="margin-bottom: 12px;">
+            <div class="card card-accent-rose">
+                <div class="card-title">1. What is Actually Lost?</div>
+                <p class="card-desc">Codebases and tickets remain, but vital <strong>tacit rationale</strong> evaporates when engineers depart:</p>
+                <ul class="feature-list">
+                    <li><strong>Architectural Decision Rationale:</strong> Why framework X was chosen over Y, and what unrecorded pitfalls were encountered.</li>
+                    <li><strong>Unfinished & In-Flight PRs:</strong> Half-merged branches, staging-specific quirks, and undocumented environment variables.</li>
+                    <li><strong>Invisible Dependencies:</strong> Fragile third-party API rate limits and unwritten workarounds kept in developer heads.</li>
+                    <li><strong>The Human Network:</strong> Who truly owns the upstream service and who needs to approve database schema changes.</li>
+                </ul>
+            </div>
+
+            <div class="card-accent-amber card">
+                <div class="card-title">2. Why Existing Docs Fail?</div>
+                <p class="card-desc">Modern engineering squads suffer from four structural documentation breakdown modes:</p>
+                <ul class="feature-list">
+                    <li><strong>Documentation Drift:</strong> Confluence wikis decay within 30 days of release; code changes while docs remain frozen.</li>
+                    <li><strong>Fragmented Project Exhaust:</strong> Truth is splintered across PR comments, ephemeral Slack threads, and Jira backlogs.</li>
+                    <li><strong>Offboarding Cognitive Fatigue:</strong> Departing staff have zero mental bandwidth to write 50-page handbooks in their notice period.</li>
+                    <li><strong>Generic AI Hallucinations:</strong> Naive LLM summarizers guess missing facts, inventing fake credentials and false designs.</li>
+                </ul>
+            </div>
+
+            <div class="card card-accent-blue">
+                <div class="card-title">3. Specific Solution Scope</div>
+                <p class="card-desc">ContinuumAI defines a rigorous, solvable engineering problem boundary for the challenge:</p>
+                <ul class="feature-list">
+                    <li><strong>In-Scope:</strong> Ingesting Git commit histories, PR discussions, issue trackers, and team chats into an evidence-grounded timeline.</li>
+                    <li><strong>In-Scope:</strong> Explicitly detecting and highlighting contradictory discussions (e.g. Slack says "switch to Mongo", but Git merged Postgres).</li>
+                    <li><strong>In-Scope:</strong> Enforcing dynamic role-based redaction so junior successors never see privileged executive credentials.</li>
+                    <li><strong>Out-of-Scope:</strong> Generative speculation without traceable source grounding.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card card-accent-emerald">
+            <div class="card-title" style="margin-bottom: 8px;">Affected User Personas & Real-World Operating Scenarios</div>
+            <div class="grid-3" style="gap: 16px;">
+                <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 12px;">
+                    <div style="font-weight: 800; font-size: 9.5pt; color: #0f172a; margin-bottom: 4px;">Outgoing Contributor (Senior Dev / Lead):</div>
+                    <div style="font-size: 8.4pt; color: #475569; line-height: 1.48;">
+                        Overworked in their final 2-week notice period. Needs an automated assistant that pre-drafts 85% of the handover from their activity exhaust, allowing them to review, resolve ambiguities, and sign off in under 30 minutes without stressful authoring.
+                    </div>
+                </div>
+                <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 12px;">
+                    <div style="font-weight: 800; font-size: 9.5pt; color: #0f172a; margin-bottom: 4px;">Incoming Successor (New Joiner / Peer):</div>
+                    <div style="font-size: 8.4pt; color: #475569; line-height: 1.48;">
+                        Confronted by an unfamiliar 50,000-line codebase. Needs an evidence-backed roadmap of unwritten dependencies, verified architectural decisions, a clickable "First 30 Days" tasklist, and confidence they won't break production.
+                    </div>
+                </div>
+                <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 12px;">
+                    <div style="font-weight: 800; font-size: 9.5pt; color: #0f172a; margin-bottom: 4px;">Engineering Manager & Squad Lead:</div>
+                    <div style="font-size: 8.4pt; color: #475569; line-height: 1.48;">
+                        Accountable for velocity, compliance, and eliminating single-point-of-failure "bus factors". Needs a verifiable audit ledger showing that all critical knowledge, in-flight bugs, and vendor contacts were transferred with zero IP leakage.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-footer">
+        <span>CONTINUUMAI • PROBLEM STATEMENT EVALUATION</span>
+        <span>25/25 POINTS TARGETED • DECOMPOSITION & PERSONAS</span>
+        <span>SLIDE 02 / 08</span>
+    </div>
+</div>
+
+<!-- SLIDE 3: PROPOSED SOLUTION & ARCHITECTURAL PHILOSOPHY (25 PTS) -->
+<div class="slide">
+    <div class="slide-top-nav">
+        <div class="nav-left">
+            <span class="badge-pill badge-emerald">CRITERION 2 — 25 POINTS</span>
+            <span class="badge-pill badge-indigo">PROPOSED SOLUTION</span>
+        </div>
+        <div class="team-nav">RUBRIC: SOLUTION DESIGN & VALUE PROPOSITION</div>
+    </div>
+
+    <div class="slide-heading-block">
+        <h1 class="slide-title">
+            <span class="title-accent">Proposed Solution:</span> ContinuumAI Handover Ecosystem
+        </h1>
+        <p class="slide-subtitle">
+            A deterministic, evidence-grounded platform converting project exhaust into verified, role-appropriate continuity packages
+        </p>
+    </div>
+
+    <div class="slide-content-body">
+        <div class="grid-3" style="margin-bottom: 12px;">
+            <div class="card card-accent-blue">
+                <div class="card-title">1. Traceable Evidence Graph</div>
+                <p class="card-desc">
+                    Unlike generic chat summaries, ContinuumAI links every single extracted claim to an immutable source pin.
+                </p>
+                <div class="card-highlight">
+                    <strong>Source Anchor Model:</strong> Every bullet points to exact GitHub commit SHAs, PR review lines, Jira issue IDs, or Slack message timestamps. A clickable badge allows instant inspection of raw proof.
+                </div>
+                <p class="card-desc" style="margin-top: 8px;">
+                    <strong>Zero Hallucination Policy:</strong> If a fact lacks corroborating data in connected sources, it is marked with an <em>[UNVERIFIED_CLAIM]</em> badge rather than guessed.
+                </p>
+            </div>
+
+            <div class="card card-accent-purple">
+                <div class="card-title">2. Actionable Continuation Engine</div>
+                <p class="card-desc">
+                    Converts passive summaries into immediately executable onboarding milestones for the incoming successor.
+                </p>
+                <div class="card-highlight">
+                    <strong>Next Steps Synthesizer:</strong> Automatically reconstructs unmerged branch status, failing integration tests, pending ticket blockers, and priority actions for Days 1–30.
+                </div>
+                <p class="card-desc" style="margin-top: 8px;">
+                    <strong>Stakeholder Map:</strong> Generates a dynamic "Who to Contact for What" directory based on commit co-authorship and slack reaction reciprocity.
+                </p>
+            </div>
+
+            <div class="card card-accent-emerald">
+                <div class="card-title">3. Permission-Aware Scoping</div>
+                <p class="card-desc">
+                    Maintains absolute zero-trust confidentiality across organizational clearance boundaries.
+                </p>
+                <div class="card-highlight">
+                    <strong>Role Projections:</strong> Compiles distinct lenses: <em>Engineer Deep-Dive</em>, <em>PM/Stakeholder Scope</em>, and <em>External Contractor Sandbox</em> from the same source corpus.
+                </div>
+                <p class="card-desc" style="margin-top: 8px;">
+                    <strong>Automated Redaction:</strong> Embedded Microsoft Presidio filters strip API keys, secret credentials, and private customer PII before briefing generation.
+                </p>
+            </div>
+        </div>
+
+        <div class="card card-accent-cyan">
+            <div class="card-title" style="margin-bottom: 6px;">Operational Paradigm Shift: Traditional Offboarding vs. ContinuumAI</div>
+            <table class="compact-table">
+                <thead>
+                    <tr>
+                        <th style="width: 22%;">Dimension</th>
+                        <th style="width: 39%;">Traditional Broken Offboarding</th>
+                        <th style="width: 39%; background: #eff6ff; color: #1e3a8a;">ContinuumAI Autonomous Continuity Engine</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Preparation Time</strong></td>
+                        <td>15–20 hours of manual, rushed document writing (often skipped entirely).</td>
+                        <td><strong style="color: #16a34a;">Under 20 minutes:</strong> Automated ingestion + human verification cockpit.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Veracity & Trust</strong></td>
+                        <td>Subjective memories, stale wikis, and forgotten verbal agreements.</td>
+                        <td><strong style="color: #2563eb;">100% Cryptographically Traceable:</strong> Every point links to raw commits and chats.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Contradictions</strong></td>
+                        <td>Hidden; incoming dev discovers conflicts when production crashes.</td>
+                        <td><strong style="color: #d97706;">Explicitly Surfaced:</strong> AI highlights conflicting Slack vs PR discussions.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Data Governance</strong></td>
+                        <td>High risk of accidental secret or salary data leaking in shared docs.</td>
+                        <td><strong style="color: #7c3aed;">Zero-Leak RBAC:</strong> Role-governed views with automated PII & credential masking.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="slide-footer">
+        <span>CONTINUUMAI • PROPOSED SOLUTION ARCHITECTURE</span>
+        <span>25/25 POINTS TARGETED • TRACEABLE • ACTIONABLE • PERMISSION-AWARE</span>
+        <span>SLIDE 03 / 08</span>
+    </div>
+</div>
+
+<!-- SLIDE 4: THE COMPLETE 5-STEP CORE WORKFLOW (REQUIRED CORE WORKFLOW) -->
+<div class="slide">
+    <div class="slide-top-nav">
+        <div class="nav-left">
+            <span class="badge-pill badge-indigo">REQUIRED CORE WORKFLOW</span>
+            <span class="badge-pill badge-cyan">END-TO-END ENGINE PIPELINE</span>
+        </div>
+        <div class="team-nav">CONNECT &rarr; RECONSTRUCT &rarr; VERIFY &rarr; REVIEW &rarr; HANDOVER</div>
+    </div>
+
+    <div class="slide-heading-block">
+        <h1 class="slide-title">
+            <span class="title-accent">The 5-Step Core Workflow:</span> From Fragmented Exhaust to Handover
+        </h1>
+        <p class="slide-subtitle">
+            Executing the hackathon's required core workflow with cryptographic lineage, anti-hallucination guardrails, and two-party signoff
+        </p>
+    </div>
+
+    <div class="slide-content-body">
+        <div class="grid-5" style="margin-bottom: 12px;">
+            <!-- Step 1 -->
+            <div class="step-box" style="border-top: 4.5px solid #2563eb;">
+                <div>
+                    <div class="step-header">
+                        <span class="step-num">01</span>
+                        <span class="badge-pill badge-indigo" style="font-size: 6.8pt; padding: 2px 6px;">INGEST</span>
+                    </div>
+                    <div class="step-name">Connect</div>
+                    <ul class="feature-list" style="padding-left: 12px; font-size: 7.8pt;">
+                        <li>Authorize project sources: GitHub, Jira/Linear, Slack, Docs.</li>
+                        <li>Automated PII, API token, and secret redaction via Presidio.</li>
+                        <li>Synthetic offline dumps for safe hackathon evaluation.</li>
+                    </ul>
+                </div>
+                <div class="card-highlight" style="font-size: 7.4pt; color: #1e40af; padding: 6px 8px;">
+                    <strong>Output:</strong> Normalized, sanitized project event stream.
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="step-box" style="border-top: 4.5px solid #059669;">
+                <div>
+                    <div class="step-header">
+                        <span class="step-num" style="background: #059669;">02</span>
+                        <span class="badge-pill badge-emerald" style="font-size: 6.8pt; padding: 2px 6px;">GRAPH</span>
+                    </div>
+                    <div class="step-name">Reconstruct</div>
+                    <ul class="feature-list" style="padding-left: 12px; font-size: 7.8pt;">
+                        <li>Construct Temporal AST connecting PRs, commits, and chats.</li>
+                        <li>Extract implicit Architecture Decision Records (ADRs).</li>
+                        <li>Identify unmerged branches, blockers, and bug cycles.</li>
+                    </ul>
+                </div>
+                <div class="card-highlight" style="font-size: 7.4pt; color: #065f46; padding: 6px 8px;">
+                    <strong>Output:</strong> Directional causal knowledge graph.
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="step-box" style="border-top: 4.5px solid #d97706;">
+                <div>
+                    <div class="step-header">
+                        <span class="step-num" style="background: #d97706;">03</span>
+                        <span class="badge-pill badge-amber" style="font-size: 6.8pt; padding: 2px 6px;">VERIFY</span>
+                    </div>
+                    <div class="step-name">Verify & Reconcile</div>
+                    <ul class="feature-list" style="padding-left: 12px; font-size: 7.8pt;">
+                        <li>Every claim is pinned to exact line numbers and SHAs.</li>
+                        <li><strong>Conflict Detector:</strong> Flags chat vs merged code debates.</li>
+                        <li><strong>Uncertainty Badging:</strong> Explicitly highlights missing evidence.</li>
+                    </ul>
+                </div>
+                <div class="card-highlight" style="font-size: 7.4pt; color: #92400e; padding: 6px 8px;">
+                    <strong>Output:</strong> Evidence-grounded draft with conflict alerts.
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="step-box" style="border-top: 4.5px solid #7c3aed;">
+                <div>
+                    <div class="step-header">
+                        <span class="step-num" style="background: #7c3aed;">04</span>
+                        <span class="badge-pill badge-violet" style="font-size: 6.8pt; padding: 2px 6px;">HUMAN</span>
+                    </div>
+                    <div class="step-name">Review & Approve</div>
+                    <ul class="feature-list" style="padding-left: 12px; font-size: 7.8pt;">
+                        <li>Interactive split-screen editing dashboard for lead & manager.</li>
+                        <li>1-click conflict resolution ("Confirm Postgres was kept").</li>
+                        <li>Two-party cryptographic sign-off with audit ledger.</li>
+                    </ul>
+                </div>
+                <div class="card-highlight" style="font-size: 7.4pt; color: #5b21b6; padding: 6px 8px;">
+                    <strong>Output:</strong> Certified, human-approved continuity dossier.
+                </div>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="step-box" style="border-top: 4.5px solid #0891b2;">
+                <div>
+                    <div class="step-header">
+                        <span class="step-num" style="background: #0891b2;">05</span>
+                        <span class="badge-pill badge-cyan" style="font-size: 6.8pt; padding: 2px 6px;">ACTIVATE</span>
+                    </div>
+                    <div class="step-name">Role Handover</div>
+                    <ul class="feature-list" style="padding-left: 12px; font-size: 7.8pt;">
+                        <li>Role-filtered views: Junior Dev, Lead Architect, Contractor.</li>
+                        <li>Interactive <em>"Ask This Handover"</em> cited Q&A assistant.</li>
+                        <li>Successor formal receipt acknowledgment & 30-day plan.</li>
+                    </ul>
+                </div>
+                <div class="card-highlight" style="font-size: 7.4pt; color: #0e7490; padding: 6px 8px;">
+                    <strong>Output:</strong> Tailored onboarding portal & receipt log.
+                </div>
+            </div>
+        </div>
+
+        <div class="card card-accent-blue" style="padding: 10px 14px; background: #f0f7ff; border: 1.5px solid #bfdbfe;">
+            <div style="font-size: 8.2pt; color: #1e40af; line-height: 1.5; display: flex; justify-content: space-between; align-items: center;">
+                <span><strong style="color: #1e3a8a; font-size: 8.8pt;">Enterprise Trust & Compliance Guardrails:</strong> 100% Anti-Hallucination Rejection (Refuses ungrounded queries) • Automated Secret & Credential Scrubbing • Immutable Two-Party Audit Ledger</span>
+                <span class="badge-pill badge-emerald" style="font-size: 7pt; padding: 3px 10px;">ZERO PRIVILEGE ESCALATION</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-footer">
+        <span>CONTINUUMAI • 5-STEP CORE PIPELINE</span>
+        <span>COMPLIANT WITH THREE-ROUND CHALLENGE WORKFLOW GUIDELINES</span>
+        <span>SLIDE 04 / 08</span>
+    </div>
+</div>
+
+<!-- SLIDE 5: MAIN FEATURES TO BE BUILT & USER EXPERIENCE (FEATURE INVENTORY) -->
+<div class="slide">
+    <div class="slide-top-nav">
+        <div class="nav-left">
+            <span class="badge-pill badge-cyan">FEATURE INVENTORY</span>
+            <span class="badge-pill badge-emerald">ROUND 1 SCOPE COMMITMENT</span>
+        </div>
+        <div class="team-nav">6 CORE PRODUCTION-READY CAPABILITIES</div>
+    </div>
+
+    <div class="slide-heading-block">
+        <h1 class="slide-title">
+            <span class="title-accent">Main Product Features:</span> Built for Verifiable Knowledge Continuity
+        </h1>
+        <p class="slide-subtitle">
+            Engineered to deliver high utility, strict evidence verification, and intuitive handover navigation
+        </p>
+    </div>
+
+    <div class="slide-content-body">
+        <div class="grid-3" style="margin-bottom: 12px;">
+            <!-- Feature 1 -->
+            <div class="card card-accent-blue">
+                <div class="card-title">F1: Multi-Source Ingestion & Sanitizer</div>
+                <p class="card-desc">
+                    Connectors for GitHub, Linear/Jira, Slack, and Docs with automatic secret redaction.
+                </p>
+                <ul class="feature-list">
+                    <li>Parses commit messages, PR review comments, and issue resolutions.</li>
+                    <li><strong>Integrated Presidio Redaction:</strong> Masks AWS keys, passwords, and PII on ingestion.</li>
+                    <li>Pre-loaded synthetic enterprise dataset for judge evaluation.</li>
+                </ul>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="card card-accent-purple">
+                <div class="card-title">F2: Temporal Decision & State Engine</div>
+                <p class="card-desc">
+                    Constructs an evolutionary timeline of technical choices and architectural pivots.
+                </p>
+                <ul class="feature-list">
+                    <li>Extracts implicit Architecture Decision Records (ADRs) from PR review debates.</li>
+                    <li>Surfaces abandoned approaches so successors don't repeat failed experiments.</li>
+                    <li>Chronological timeline slider showing project inflection points.</li>
+                </ul>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="card card-accent-amber">
+                <div class="card-title">F3: Evidence Citation & Conflict Highlighter</div>
+                <p class="card-desc">
+                    Zero blind trust: every generated summary claim is anchored to source truth.
+                </p>
+                <ul class="feature-list">
+                    <li>Hoverable citation tags linking directly to file, line number, or Slack msg ID.</li>
+                    <li><strong>Conflict Engine:</strong> Highlights conflicting claims between team members.</li>
+                    <li><strong>Ambiguity Badges:</strong> Identifies unconfirmed tasks requiring human input.</li>
+                </ul>
+            </div>
+
+            <!-- Feature 4 -->
+            <div class="card card-accent-emerald">
+                <div class="card-title">F4: Role-Partitioned Scoping Engine</div>
+                <p class="card-desc">
+                    Dynamic projection generation based on recipient security clearance and job function.
+                </p>
+                <ul class="feature-list">
+                    <li><strong>Engineering View:</strong> Code architecture, unresolved bugs, API dependencies.</li>
+                    <li><strong>Product / PM View:</strong> Milestone progress, business blockers, feature status.</li>
+                    <li><strong>Contractor View:</strong> Strictly scoped to public tasks with private data redacted.</li>
+                </ul>
+            </div>
+
+            <!-- Feature 5 -->
+            <div class="card card-accent-rose">
+                <div class="card-title">F5: Interactive HITL Review Cockpit</div>
+                <p class="card-desc">
+                    Empowering the outgoing employee and manager to retain complete control over the handover.
+                </p>
+                <ul class="feature-list">
+                    <li>Side-by-side diff editor to modify, remove, or supplement AI-reconstructed notes.</li>
+                    <li>One-click confirmation of ambiguous items flagged by the verification engine.</li>
+                    <li>Cryptographic signing and exportable handover certificate (PDF & Markdown).</li>
+                </ul>
+            </div>
+
+            <!-- Feature 6 -->
+            <div class="card card-accent-cyan">
+                <div class="card-title">F6: Successor "Ask This Handover" Tool</div>
+                <p class="card-desc">
+                    Grounded conversational search enabling incoming engineers to query project history.
+                </p>
+                <ul class="feature-list">
+                    <li>Natural language queries (e.g. <em>"Why do we use custom auth instead of Supabase?"</em>).</li>
+                    <li>Answers strictly synthesized from verified handover nodes with direct citations.</li>
+                    <li>Pre-configured "First 30 Days" interactive checklist with task ownership.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card card-accent-blue" style="padding: 10px 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 8.8pt; font-weight: 700; color: #0f172a;">
+                    User Interface Guarantee: Clean, accessible Next.js 14 Web Application requiring zero onboarding friction.
+                </span>
+                <span class="badge-pill badge-emerald">READY FOR LIVE DEMONSTRATION IN ROUND 2</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-footer">
+        <span>CONTINUUMAI • FUNCTIONAL CAPABILITIES</span>
+        <span>6 CORE FEATURES TARGETED FOR ZERO-FRICTION TRANSITION</span>
+        <span>SLIDE 05 / 08</span>
+    </div>
+</div>
+
+<!-- SLIDE 6: TECHNICAL PLAN, SYSTEM ARCHITECTURE & CORE CHALLENGES (20 PTS) -->
+<div class="slide">
+    <div class="slide-top-nav">
+        <div class="nav-left">
+            <span class="badge-pill badge-indigo">CRITERION 3 — 20 POINTS</span>
+            <span class="badge-pill badge-emerald">TECHNICAL ARCHITECTURE</span>
+        </div>
+        <div class="team-nav">RUBRIC: TECH STACK JUSTIFICATION & HARDEST CHALLENGE</div>
+    </div>
+
+    <div class="slide-heading-block">
+        <h1 class="slide-title">
+            <span class="title-accent">Technical Plan:</span> Resilient Architecture & Evidence Graph
+        </h1>
+        <p class="slide-subtitle">
+            Defensible multi-tier architecture, technology stack justification, and algorithmic solution for cross-source reconciliation
+        </p>
+    </div>
+
+    <div class="slide-content-body">
+        <div class="grid-23" style="margin-bottom: 8px;">
+            <!-- Left: Tech Stack Table -->
+            <div class="card card-accent-blue">
+                <div class="card-title">Technology Stack & Architectural Selection</div>
+                <table class="compact-table" style="font-size: 7.8pt;">
+                    <thead>
+                        <tr>
+                            <th>Layer</th>
+                            <th>Technology</th>
+                            <th>Defensible Justification</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Frontend</strong></td>
+                            <td>Next.js 14, React, Tailwind, Lucide, Shadcn</td>
+                            <td>Fast SSR, rich component ecosystem for interactive knowledge graphs & split diff views.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Backend API</strong></td>
+                            <td>Python FastAPI, Pydantic v2, Uvicorn</td>
+                            <td>High-throughput async execution, native interoperability with Python ML/AI ecosystem.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>AI / LLM Engine</strong></td>
+                            <td>Google Gemini 1.5 Pro via LangGraph</td>
+                            <td>2M context window ingests full commit & chat histories without lossy chunking; high fidelity.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Dual Data Store</strong></td>
+                            <td>NetworkX / Neo4j + ChromaDB</td>
+                            <td>Causal dependency modeling (Graph) paired with semantic similarity retrieval (Vector DB).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Data Privacy</strong></td>
+                            <td>Microsoft Presidio + Regex Masking</td>
+                            <td>Deterministic redaction of API keys, tokens, emails, and passwords before vector embedding.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="card-highlight" style="margin-top: 10px; font-size: 8pt;">
+                    <strong>Local & Cloud Adaptability:</strong> The architecture supports both local air-gapped deployment (using Ollama / local ChromaDB) and cloud enterprise deployments (Gemini API + PostgreSQL).
+                </div>
+            </div>
+
+            <!-- Right: Hardest Challenge & Architecture -->
+            <div class="card card-accent-purple">
+                <div class="card-title">Hardest Technical Challenge & Solved Architecture</div>
+                <p class="card-desc" style="font-size: 8.5pt; margin-bottom: 6px;">
+                    <strong>The Challenge: Cross-Source Temporal Contradictions & Hallucination Mitigation</strong><br>
+                    When Slack shows an engineer proposing <em>"Let's migrate to Redis"</em>, Jira marks an unassigned spike, but a merged GitHub PR shows <em>"Optimized PostgreSQL connection pool"</em>, naive LLMs hallucinate a nonexistent hybrid setup.
+                </p>
+
+                <div style="background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 7px; padding: 10px; margin-top: 4px;">
+                    <div style="font-family: 'Space Grotesk'; font-size: 9.5pt; font-weight: 700; color: #1e3a8a; margin-bottom: 4px;">
+                        ContinuumAI Temporal Reconciliation Engine (TRE)
+                    </div>
+                    <div style="font-size: 8pt; color: #334155; line-height: 1.45;">
+                        1. <strong>Timestamped Entity AST:</strong> Events are sorted along a directed timeline. Merged code in <code>main</code> branch is given higher deterministic weight than unmerged PRs or exploratory Slack discussions.<br>
+                        2. <strong>Bidirectional Claim Cross-Checking:</strong> Extracted decisions are verified against codebase reality (e.g. checking <code>package.json</code> or import trees).<br>
+                        3. <strong>Explicit <code>[CONFLICT_DETECTED]</code> Circuit Breaker:</strong> If a discrepancy remains unresolved by code merges, the system <em>refuses to speculate</em>. It renders both citations side-by-side in the Step 4 Human Review Cockpit with an urgent prompt for the departing lead to confirm the true state in 1 click.
+                    </div>
+                </div>
+
+                <div class="card-highlight" style="margin-top: 8px; background: #fdf2f8; border: 1px solid #fbcfe8; font-size: 8pt;">
+                    <strong style="color: #be185d;">Zero-Blind-Trust Guarantee:</strong> The system enforces a strict <em>Grounded Claim Ratio (GCR = 1.0)</em>. If an assertion cannot be mathematically linked to a vector or graph node, it is pruned from the handover dossier.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-footer">
+        <span>CONTINUUMAI • TECHNICAL SPECIFICATION</span>
+        <span>20/20 POINTS TARGETED • DEFENSIBLE STACK & TEMPORAL RECONCILIATION</span>
+        <span>SLIDE 06 / 08</span>
+    </div>
+</div>
+
+<!-- SLIDE 7: ORIGINALITY OF APPROACH & FEASIBILITY / TEAM RESPONSIBILITIES (15+15 PTS) -->
+<div class="slide">
+    <div class="slide-top-nav">
+        <div class="nav-left">
+            <span class="badge-pill badge-amber">CRITERIA 4 & 5 — 30 POINTS</span>
+            <span class="badge-pill badge-emerald">ORIGINALITY & FEASIBILITY</span>
+        </div>
+        <div class="team-nav">DISTINCTIVE INNOVATION & SCOPED DELIVERY PLAN</div>
+    </div>
+
+    <div class="slide-heading-block">
+        <h1 class="slide-title">
+            <span class="title-accent">Originality & Feasibility:</span> Beyond Generic Summarization
+        </h1>
+        <p class="slide-subtitle">
+            Why ContinuumAI is uniquely defensible, realistically scoped, and backed by a disciplined team allocation
+        </p>
+    </div>
+
+    <div class="slide-content-body">
+        <div class="grid-2" style="margin-bottom: 8px;">
+            <!-- Originality Comparison -->
+            <div class="card card-accent-purple">
+                <div class="card-title">Originality: ContinuumAI vs Generic AI Summarizers</div>
+                <table class="compact-table" style="font-size: 7.8pt;">
+                    <thead>
+                        <tr>
+                            <th>Capability</th>
+                            <th>Generic Summarizer (ChatGPT/Copilot)</th>
+                            <th>ContinuumAI Engine</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Evidence Grounding</strong></td>
+                            <td>Generates plausible prose without proof; no source verification.</td>
+                            <td><strong style="color: #2563eb;">100% Citation Pinning</strong> to exact lines, commits, and timestamps.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Handling Contradictions</strong></td>
+                            <td>Smooths over differences or invents compromises.</td>
+                            <td><strong style="color: #d97706;">Explicit Conflict Flags</strong> presented for human resolution.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Access Control (RBAC)</strong></td>
+                            <td>Single global prompt context; leaks secrets across roles.</td>
+                            <td><strong style="color: #7c3aed;">Role-Partitioned Views</strong> with automated credential stripping.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Continuity Lifecycle</strong></td>
+                            <td>One-off passive summary text.</td>
+                            <td><strong style="color: #16a34a;">Formal Two-Party Sign-Off</strong> + interactive Day-1 task cockpit.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="card-highlight" style="margin-top: 10px; font-size: 8.2pt;">
+                    <strong>Distinctive Insight:</strong> Handover is not an AI writing task—it is an <em>organizational trust and reconciliation protocol</em>. AI reconstructs evidence; humans verify truth.
+                </div>
+            </div>
+
+            <!-- Feasibility & Team Allocation -->
+            <div class="card card-accent-emerald">
+                <div class="card-title">Feasibility & Team Allocation (15 Pts Rubric)</div>
+                <p class="card-desc" style="font-size: 8.4pt; margin-bottom: 5px;">
+                    <strong>Disciplined Hackathon Scope:</strong> We reject bloated, unbuildable feature lists. We focus strictly on the software engineering handover journey using a battle-tested synthetic dataset.
+                </p>
+
+                <table class="compact-table" style="font-size: 7.8pt;">
+                    <thead>
+                        <tr>
+                            <th>Team Member</th>
+                            <th>Assigned Workstream & Deliverables</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Prince Kumar</strong><br><span style="font-size: 6.8pt; color: #64748b;">AI Architect & Lead</span></td>
+                            <td>LangGraph pipeline orchestration, Gemini prompt chains, Temporal Reconciliation Engine, and conflict detection logic.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Yash Sharma</strong><br><span style="font-size: 6.8pt; color: #64748b;">Full-Stack Engineer</span></td>
+                            <td>Next.js 14 review cockpit, visual knowledge graph rendering, role projection selector, and citation hover UI.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Valerion Coders</strong><br><span style="font-size: 6.8pt; color: #64748b;">Delivery Commitment</span></td>
+                            <td>Complete 5-step workflow running end-to-end on synthetic enterprise repo in Round 2 without broken steps.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="card-highlight" style="margin-top: 8px; font-size: 8pt; background: #f0fdf4; border: 1.5px solid #bbf7d0;">
+                    <strong style="color: #166534;">Synthetic Testbed Guarantee:</strong> A pre-packaged, offline-accessible synthetic repo (45 commits, 20 PRs, 80 Slack msgs with 3 deliberate contradictions) ensures judges can immediately test the pipeline in Round 2 without complex enterprise OAuth setups.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-footer">
+        <span>CONTINUUMAI • ORIGINALITY & FEASIBILITY EVALUATION</span>
+        <span>30/30 POINTS TARGETED • DISTINCTIVE PROTOCOL & SCOPED REALISM</span>
+        <span>SLIDE 07 / 08</span>
+    </div>
+</div>
+
+<!-- SLIDE 8: 3-ROUND DEVELOPMENT ROADMAP, EXPECTED IMPACT & FUTURE SCOPE -->
+<div class="slide">
+    <div class="slide-top-nav">
+        <div class="nav-left">
+            <span class="badge-pill badge-emerald">DEVELOPMENT PLAN & ROADMAP</span>
+            <span class="badge-pill badge-indigo">ROUNDS 1 &rarr; 2 &rarr; 3</span>
+        </div>
+        <div class="team-nav">MEASURABLE IMPACT & POST-EVENT EXPANSION</div>
+    </div>
+
+    <div class="slide-heading-block">
+        <h1 class="slide-title">
+            <span class="title-accent">Three-Round Development Roadmap & Impact</span>
+        </h1>
+        <p class="slide-subtitle">
+            Progressive delivery milestones across the hackathon lifecycle, quantifiable success metrics, and enterprise future scope
+        </p>
+    </div>
+
+    <div class="slide-content-body">
+        <div class="grid-3" style="margin-bottom: 10px;">
+            <!-- Round 1 -->
+            <div class="card card-accent-blue">
+                <div class="card-title">Round 1 — The Plan (Completed)</div>
+                <ul class="feature-list" style="font-size: 8pt;">
+                    <li><strong>Problem & User Validation:</strong> Full decomposition of tacit knowledge loss, user personas, and operating scenarios.</li>
+                    <li><strong>Architectural Blueprint:</strong> 5-step core pipeline, FastAPI + Gemini 1.5 + ChromaDB architecture.</li>
+                    <li><strong>Anti-Hallucination Framework:</strong> Formulated Temporal Reconciliation Engine for cross-source contradiction resolution.</li>
+                    <li><strong>Synthetic Corpus Specification:</strong> Defined multi-source test dataset with intentional edge cases.</li>
+                </ul>
+            </div>
+
+            <!-- Round 2 -->
+            <div class="card card-accent-purple">
+                <div class="card-title">Round 2 — The Build (Core MVP)</div>
+                <ul class="feature-list" style="font-size: 8pt;">
+                    <li><strong>End-to-End Pipeline Execution:</strong> Judges upload authorized source data and receive reconstructed state.</li>
+                    <li><strong>Working Evidence Links:</strong> Clickable citation pins linking summary bullets to raw commits and chat snippets.</li>
+                    <li><strong>Human Review Cockpit:</strong> Working interface to edit notes, resolve conflicts, and approve handover.</li>
+                    <li><strong>Round 3 Commitments:</strong> Lock in 3 substantial, non-cosmetic feature advancements for the final round.</li>
+                </ul>
+            </div>
+
+            <!-- Round 3 -->
+            <div class="card card-accent-emerald">
+                <div class="card-title">Round 3 — The Finish (Polish & Scale)</div>
+                <ul class="feature-list" style="font-size: 8pt;">
+                    <li><strong>Delivering 3 Committed Upgrades:</strong><br>
+                        1. <em>Interactive Grounded Q&A Assistant</em> ("Ask This Handover").<br>
+                        2. <em>Dynamic Role-Based Redaction Engine</em> (Dev vs PM vs Contractor).<br>
+                        3. <em>Cryptographically Signed Handover Certificate</em> & Audit Ledger.</li>
+                    <li><strong>Stress & Reliability Testing:</strong> Failure-mode handling and missing data tolerance.</li>
+                    <li><strong>Comprehensive Video Demonstration:</strong> Full judge walkthrough.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="card card-accent-amber">
+                <div class="card-title">Quantifiable Expected Impact Metrics</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 8pt;">
+                    <div style="background: #ffffff; border: 1px solid #fed7aa; border-radius: 5px; padding: 6px 8px;">
+                        <strong style="color: #c2410c;">75% Faster Successor Ramp-Up:</strong> Cuts new engineer onboarding time from 4–6 weeks down to 5–7 business days.
+                    </div>
+                    <div style="background: #ffffff; border: 1px solid #fed7aa; border-radius: 5px; padding: 6px 8px;">
+                        <strong style="color: #c2410c;">Eliminates "Bus Factor":</strong> Projects survive single-point-of-failure resignations with zero loss of architecture rationale.
+                    </div>
+                    <div style="background: #ffffff; border: 1px solid #fed7aa; border-radius: 5px; padding: 6px 8px;">
+                        <strong style="color: #c2410c;">90% Offboarding Time Saved:</strong> Departing lead completes a comprehensive handover review in under 30 minutes.
+                    </div>
+                    <div style="background: #ffffff; border: 1px solid #fed7aa; border-radius: 5px; padding: 6px 8px;">
+                        <strong style="color: #c2410c;">Zero Privilege Escalation:</strong> Automated redaction guarantees no credentials or executive secrets are exposed.
+                    </div>
+                </div>
+            </div>
+
+            <div class="card card-accent-cyan">
+                <div class="card-title">Post-Hackathon Future Scope & Enterprise Horizon</div>
+                <ul class="feature-list" style="font-size: 8pt;">
+                    <li><strong>Continuous Autonomous Handover:</strong> Background agent running weekly micro-reconstructions so handovers are always 90% ready.</li>
+                    <li><strong>Enterprise SaaS Integrations:</strong> Deep bi-directional sync with Salesforce, Microsoft 365, Notion, and Asana.</li>
+                    <li><strong>SOC 2 & ISO 27001 Compliance Vault:</strong> Automated offboarding attestation reports for enterprise security audits.</li>
+                    <li><strong>Multi-Modal Ingestion:</strong> Transcribing Zoom/Google Meet design discussions into the temporal knowledge graph.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-footer">
+        <span>CONTINUUMAI • ROUND 1 THE PLAN COMPLETE</span>
+        <span>SUBMISSION-READY PDF DOSSIER • VALERION CODERS</span>
+        <span>SLIDE 08 / 08</span>
+    </div>
+</div>
+
+</body>
+</html>
