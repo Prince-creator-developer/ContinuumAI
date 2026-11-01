@@ -82,14 +82,18 @@ async def serve_dashboard(request: Request):
         tre_data = tre.verify_and_reconcile(raw_sources, state)
         review_state = ledger.get_review_state()
 
-        return templates.TemplateResponse("index.html", {
-            "request": request,
-            "state": state,
-            "tre": tre_data,
-            "review": review_state,
-            "version": "2.0.0 (Round 2 Multi-Service Build)",
-            "server_bound": True
-        })
+        return templates.TemplateResponse(
+            request=request,
+            name="index.html",
+            context={
+                "request": request,
+                "state": state,
+                "tre": tre_data,
+                "review": review_state,
+                "version": "2.0.0 (Round 2 Multi-Service Build)",
+                "server_bound": True
+            }
+        )
     except Exception as e:
         import traceback
         return HTMLResponse(
