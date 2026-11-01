@@ -1,0 +1,102 @@
+[
+  {
+    "sha": "a1c8f92",
+    "timestamp": "2026-05-10T09:30:00Z",
+    "author": "Prince Kumar <prince@valerion.dev>",
+    "message": "feat(core): initial repository setup and database schema for user profiles",
+    "branch": "main",
+    "files_changed": ["src/db/schema.sql", "src/models/user.py"],
+    "diff_summary": "+CREATE TABLE users (id UUID PRIMARY KEY, email VARCHAR(255) UNIQUE, role VARCHAR(50));",
+    "status": "merged"
+  },
+  {
+    "sha": "b4e2d19",
+    "timestamp": "2026-05-18T14:15:00Z",
+    "author": "Yash Sharma <yash@valerion.dev>",
+    "message": "feat(auth): integrate custom JWT authentication and cookie session middleware",
+    "branch": "main",
+    "files_changed": ["src/auth/jwt.py", "src/middleware/session.py"],
+    "diff_summary": "+def create_access_token(user_id: str): return jwt.encode({'sub': user_id}, SECRET_KEY)",
+    "status": "merged"
+  },
+  {
+    "sha": "c7a9140",
+    "timestamp": "2026-06-02T11:00:00Z",
+    "author": "Prince Kumar <prince@valerion.dev>",
+    "message": "refactor(cache): implement Redis caching layer for heavy user queries",
+    "branch": "main",
+    "files_changed": ["src/cache/redis_client.py", "requirements.txt"],
+    "diff_summary": "+import redis\n+redis_pool = redis.ConnectionPool(host=os.getenv('REDIS_HOST'), port=6379)",
+    "status": "merged"
+  },
+  {
+    "sha": "d8e3321",
+    "timestamp": "2026-06-25T16:45:00Z",
+    "author": "Yash Sharma <yash@valerion.dev>",
+    "message": "feat(api): add batch query endpoint with rate limiting support",
+    "branch": "main",
+    "files_changed": ["src/api/batch.py", "src/middleware/ratelimit.py"],
+    "diff_summary": "+@router.post('/batch')\n+async def process_batch(items: List[Item]): ...",
+    "status": "merged"
+  },
+  {
+    "sha": "e9f018b",
+    "timestamp": "2026-07-14T10:20:00Z",
+    "author": "Prince Kumar <prince@valerion.dev>",
+    "message": "perf(db): optimize PostgreSQL connection pool and index hot foreign keys",
+    "branch": "main",
+    "files_changed": ["src/db/pool.py", "migrations/004_indices.sql"],
+    "diff_summary": "+CREATE INDEX idx_user_org ON users(organization_id);",
+    "status": "merged"
+  },
+  {
+    "sha": "f1b490c",
+    "timestamp": "2026-08-05T18:00:00Z",
+    "author": "Alex Rivera (Departing Lead)",
+    "message": "feat(sync): add background task synchronization with internal salt validation",
+    "branch": "main",
+    "files_changed": ["src/services/sync_daemon.py"],
+    "diff_summary": "+salt = os.getenv('X_INTERNAL_SYNC_SALT')\n+if not salt: raise EnvironmentError('Missing sync salt')",
+    "status": "merged"
+  },
+  {
+    "sha": "3a7b51c",
+    "timestamp": "2026-08-19T13:40:00Z",
+    "author": "Alex Rivera (Departing Lead)",
+    "message": "wip(cache): experiment with Memcached cluster replacement",
+    "branch": "spike/memcached-eval",
+    "files_changed": ["src/cache/memcached_spike.py"],
+    "diff_summary": "+# Abandoned experiment: Memcached lacked cluster failover in our VPC setup",
+    "status": "abandoned"
+  },
+  {
+    "sha": "5c9e22f",
+    "timestamp": "2026-09-08T09:15:00Z",
+    "author": "Prince Kumar <prince@valerion.dev>",
+    "message": "fix(sync): resolve race condition in multi-worker background daemon",
+    "branch": "main",
+    "files_changed": ["src/services/sync_daemon.py"],
+    "diff_summary": "+# Uses Redis distributed lock instead of in-memory mutex",
+    "status": "merged"
+  },
+  {
+    "sha": "8d1a499",
+    "timestamp": "2026-09-28T17:30:00Z",
+    "author": "Alex Rivera (Departing Lead)",
+    "message": "feat(billing): setup Stripe webhook integration with retry queue",
+    "branch": "main",
+    "files_changed": ["src/billing/stripe_webhooks.py"],
+    "diff_summary": "+stripe.api_key = os.getenv('STRIPE_SECRET_KEY')",
+    "status": "merged"
+  },
+  {
+    "sha": "9e4c022",
+    "timestamp": "2026-10-15T11:50:00Z",
+    "author": "Yash Sharma <yash@valerion.dev>",
+    "message": "docs(runbook): add initial deployment runbook for Kubernetes staging cluster",
+    "branch": "main",
+    "files_changed": ["docs/runbooks/staging_deploy.md"],
+    "diff_summary": "+# Staging Deployment Guide\n+kubectl apply -f k8s/staging/",
+    "status": "merged"
+  }
+]

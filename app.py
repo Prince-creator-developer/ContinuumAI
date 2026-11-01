@@ -1,10 +1,11 @@
 """
-ContinuumAI - Intelligent Knowledge Handover & Continuity Engine
-Main Web Application & Unified API Server (Round 2 Build)
+ContinuumAI - Frontend & Gateway Service (Vercel Service: app)
+Serves the web dashboard and delegates backend state to the bound `server` service.
 """
 
 import os
 import sys
+import requests
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -25,9 +26,12 @@ from core.rbac import rbac
 from core.review_ledger import ledger
 from core.grounded_rag import assistant
 
+# Vercel Service Binding: Target internal URL for the "server" service
+SERVER_SERVICE_URL = os.environ.get("SERVER_URL", "").rstrip("/")
+
 app = FastAPI(
-    title="ContinuumAI — Intelligent Knowledge Handover Engine",
-    description="Autonomous Project State Reconstruction from Disparate Digital Exhaust (Hackathon Round 2: The Build)",
+    title="ContinuumAI — Frontend Service",
+    description="Web Dashboard and Gateway Service",
     version="2.0.0"
 )
 
@@ -48,14 +52,12 @@ if not os.path.exists(static_dir):
 
 templates = Jinja2Templates(directory=templates_dir)
 
-# Mount static files if directory exists
 if os.path.exists(static_dir):
     try:
         app.mount("/static", StaticFiles(directory=static_dir), name="static")
     except Exception as e:
         print(f"Notice: Static mount skipped: {e}")
 
-# Request Pydantic Schemas
 class ConflictResolutionRequest(BaseModel):
     conflict_id: str
     decision: str
@@ -74,45 +76,67 @@ class SignHandoverRequest(BaseModel):
 class AskQueryRequest(BaseModel):
     query: str
 
+def fetch_from_server_or_local(endpoint: str, local_fallback_fn):
+    """Fetches data from bound Vercel service or falls back to local direct call."""
+    if SERVER_SERVICE_URL:
+        try:
+            resp = requests.get(f"{SERVER_SERVICE_URL}/{endpoint.lstrip('/')}", timeout=4)
+            if resp.status_code == 200:
+                return resp.json()
+        except Exception as e:
+            print(f"Notice: Call to bound server {SERVER_SERVICE_URL} failed, falling back to local: {e}")
+    return local_fallback_fn()
+
 # ----------------- WEB FRONTEND ROUTE -----------------
 @app.get("/", response_class=HTMLResponse)
 async def serve_dashboard(request: Request):
     """Serves the main interactive Next/Tailwind style dashboard."""
     raw_sources = engine.load_raw_sources()
-    state = engine.reconstruct_project_state(raw_sources)
-    tre_data = tre.verify_and_reconcile(raw_sources, state)
-    review_state = ledger.get_review_state()
+    
+    state = fetch_from_server_or_local(
+        "api/reconstruct",
+        lambda: engine.reconstruct_project_state(raw_sources)
+    )
+    tre_data = fetch_from_server_or_local(
+        "api/verify",
+        lambda: tre.verify_and_reconcile(raw_sources, state)
+    )
+    review_state = fetch_from_server_or_local(
+        "api/ledger",
+        lambda: ledger.get_review_state()
+    )
 
     return templates.TemplateResponse("index.html", {
         "request": request,
         "state": state,
         "tre": tre_data,
         "review": review_state,
-        "version": "2.0.0 (Round 2 Build)"
+        "version": "2.0.0 (Round 2 Multi-Service Build)",
+        "server_bound": bool(SERVER_SERVICE_URL)
     })
 
-# ----------------- API ENDPOINTS -----------------
+# ----------------- GATEWAY API FALLBACK ROUTES -----------------
+# When public rewrites route /api/* to the server service, client requests hit server directly.
+# These routes are retained in app as proxies or local fallbacks.
+
 @app.get("/api/status")
 def get_system_status():
+    if SERVER_SERVICE_URL:
+        try:
+            return requests.get(f"{SERVER_SERVICE_URL}/api/status", timeout=3).json()
+        except Exception:
+            pass
     return {
         "status": "online",
-        "engine": "ContinuumAI Core Handover Pipeline",
+        "service": "ContinuumAI Frontend Gateway",
+        "server_binding": SERVER_SERVICE_URL or "local_embedded",
         "round": "Round 2 — The Build",
-        "team": "Valerion Coders",
-        "core_steps_operational": [
-            "01_connect_sanitization",
-            "02_temporal_ast_reconstruct",
-            "03_tre_verification_conflicts",
-            "04_hitl_review_signoff",
-            "05_role_governed_handover"
-        ],
-        "active_dataset": "6-Month Synthetic Enterprise Corpus (45 commits, 20 PRs, 80 Slack msgs, 15 Jira tickets)"
+        "team": "Valerion Coders"
     }
 
 @app.get("/api/sources")
 def get_sources_endpoint():
     raw = engine.load_raw_sources()
-    # Calculate sanitization statistics
     total_redactions = 0
     for ch in raw.get("slack_channels", []):
         for msg in ch.get("messages", []):
@@ -132,33 +156,52 @@ def get_sources_endpoint():
 
 @app.get("/api/reconstruct")
 def reconstruct_endpoint():
-    raw = engine.load_raw_sources()
-    return engine.reconstruct_project_state(raw)
+    return fetch_from_server_or_local("api/reconstruct", lambda: engine.reconstruct_project_state())
 
 @app.get("/api/verify")
 def verify_endpoint():
     raw = engine.load_raw_sources()
     state = engine.reconstruct_project_state(raw)
-    return tre.verify_and_reconcile(raw, state)
+    return fetch_from_server_or_local("api/verify", lambda: tre.verify_and_reconcile(raw, state))
 
 @app.get("/api/ledger")
 def get_ledger_endpoint():
-    return ledger.get_review_state()
+    return fetch_from_server_or_local("api/ledger", lambda: ledger.get_review_state())
 
 @app.post("/api/resolve_conflict")
 def resolve_conflict_endpoint(req: ConflictResolutionRequest):
+    if SERVER_SERVICE_URL:
+        try:
+            return requests.post(f"{SERVER_SERVICE_URL}/api/resolve_conflict", json=req.dict(), timeout=3).json()
+        except Exception:
+            pass
     return ledger.resolve_conflict(req.conflict_id, req.decision, req.notes, req.approver)
 
 @app.post("/api/add_note")
 def add_note_endpoint(req: TacitNoteRequest):
+    if SERVER_SERVICE_URL:
+        try:
+            return requests.post(f"{SERVER_SERVICE_URL}/api/add_note", json=req.dict(), timeout=3).json()
+        except Exception:
+            pass
     return ledger.add_tacit_note(req.author, req.content)
 
 @app.post("/api/sign")
 def sign_handover_endpoint(req: SignHandoverRequest):
+    if SERVER_SERVICE_URL:
+        try:
+            return requests.post(f"{SERVER_SERVICE_URL}/api/sign", json=req.dict(), timeout=3).json()
+        except Exception:
+            pass
     return ledger.sign_handover(req.signer_name, req.signer_role, req.project_name)
 
 @app.get("/api/handover/{role}")
 def get_role_handover_endpoint(role: str):
+    if SERVER_SERVICE_URL:
+        try:
+            return requests.get(f"{SERVER_SERVICE_URL}/api/handover/{role}", timeout=3).json()
+        except Exception:
+            pass
     raw = engine.load_raw_sources()
     state = engine.reconstruct_project_state(raw)
     tre_data = tre.verify_and_reconcile(raw, state)
@@ -166,6 +209,11 @@ def get_role_handover_endpoint(role: str):
 
 @app.post("/api/ask")
 def ask_handover_assistant_endpoint(req: AskQueryRequest):
+    if SERVER_SERVICE_URL:
+        try:
+            return requests.post(f"{SERVER_SERVICE_URL}/api/ask", json=req.dict(), timeout=3).json()
+        except Exception:
+            pass
     raw = engine.load_raw_sources()
     state = engine.reconstruct_project_state(raw)
     tre_data = tre.verify_and_reconcile(raw, state)
@@ -175,7 +223,7 @@ def ask_handover_assistant_endpoint(req: AskQueryRequest):
 if __name__ == "__main__":
     import uvicorn
     print("=" * 70)
-    print("  ContinuumAI - Intelligent Knowledge Handover & Continuity Engine")
-    print("  Round 2 Build Server Starting on http://127.0.0.1:8000")
+    print("  ContinuumAI - Frontend Service starting on http://127.0.0.1:8000")
+    print(f"  Bound Server Service: {SERVER_SERVICE_URL or 'Local In-Process'}")
     print("=" * 70)
     uvicorn.run("app:app", host="127.0.0.1", port=8000, reload=True)

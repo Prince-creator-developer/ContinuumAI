@@ -1,0 +1,48 @@
+[
+  {
+    "key": "CORE-101",
+    "summary": "Initial database migration and schema setup for multi-tenant tenancy",
+    "status": "Done",
+    "assignee": "Prince Kumar",
+    "priority": "High",
+    "resolution_date": "2026-05-11T12:00:00Z",
+    "linked_commits": ["a1c8f92"]
+  },
+  {
+    "key": "AUTH-204",
+    "summary": "Implement HIPAA compliant JWT session cookie middleware",
+    "status": "Done",
+    "assignee": "Yash Sharma",
+    "priority": "Highest",
+    "resolution_date": "2026-05-19T10:00:00Z",
+    "linked_commits": ["b4e2d19"],
+    "linked_pr": 42
+  },
+  {
+    "key": "PERF-309",
+    "summary": "Spike: Evaluate Memcached vs Redis for hot user cache",
+    "status": "Closed (Won't Fix)",
+    "assignee": "Alex Rivera (Departing Lead)",
+    "priority": "Medium",
+    "resolution_date": "2026-08-20T17:00:00Z",
+    "notes": "Spike completed. Memcached rejected due to lack of atomic lock primitives and VPC cluster clustering. Retaining Redis Cluster."
+  },
+  {
+    "key": "OPS-412",
+    "summary": "Document and automate X_INTERNAL_SYNC_SALT in CI/CD pipeline",
+    "status": "Open (Blocker)",
+    "assignee": "Alex Rivera (Departing Lead)",
+    "priority": "Highest",
+    "resolution_date": null,
+    "notes": "Unresolved technical debt. Salt is currently manual in staging K8s config. Must be handed over before Alex departs."
+  },
+  {
+    "key": "BILL-501",
+    "summary": "Setup Stripe webhook idempotency queue and retry workers",
+    "status": "Done",
+    "assignee": "Alex Rivera (Departing Lead)",
+    "priority": "High",
+    "resolution_date": "2026-09-29T11:00:00Z",
+    "linked_commits": ["8d1a499"]
+  }
+]
