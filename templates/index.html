@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ContinuumAI — Intelligent Knowledge Handover Engine (Round 2)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .font-heading { font-family: 'Space Grotesk', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col antialiased">
+
+    <!-- Top Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center text-white font-heading font-extrabold text-xl shadow-md shadow-blue-500/20">
+                    C
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="font-heading font-extrabold text-xl tracking-tight text-slate-900">Continuum<span class="text-blue-600">AI</span></span>
+                        <span class="font-mono text-xs px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 font-bold border border-blue-200">v2.0.0 BUILD</span>
+                    </div>
+                    <p class="text-xs text-slate-500 font-medium">Autonomous Project State Reconstruction & Handover Engine</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <span class="font-mono text-xs px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 font-semibold border border-emerald-200 flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    ROUND 2 OPERATIONAL
+                </span>
+                <span class="font-mono text-xs px-3 py-1 rounded-md bg-purple-50 text-purple-700 font-bold border border-purple-200">
+                    TEAM: VALERION CODERS
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full flex flex-col gap-6">
+
+        <!-- Banner Card -->
+        <div class="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 rounded-xl p-6 text-white shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+                <span class="font-mono text-xs text-blue-300 font-bold uppercase tracking-wider">HACKATHON CHALLENGE BRIEF — ROUND 2 THE BUILD</span>
+                <h1 class="font-heading text-2xl font-bold mt-1">Prevent Critical Knowledge From Leaving With People</h1>
+                <p class="text-slate-300 text-sm max-w-2xl mt-1 leading-relaxed">
+                    ContinuumAI automatically digests scattered digital exhaust into a verifiable, role-appropriate, and actionable continuation roadmap backed by line-level citations and two-party signoff.
+                </p>
+            </div>
+            <div class="flex flex-row md:flex-col items-center md:items-end gap-2 text-right">
+                <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg px-4 py-2">
+                    <div class="font-mono text-xs text-blue-200">Active Testbed Dataset</div>
+                    <div class="font-heading font-bold text-base text-white">6-Month Enterprise Corpus</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5-Step Navigation Tabs -->
+        <nav class="grid grid-cols-2 sm:grid-cols-5 gap-2 bg-slate-200/70 p-1.5 rounded-xl border border-slate-300">
+            <button onclick="switchTab('tab-connect')" id="btn-tab-connect" class="step-tab flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-xs font-bold transition-all bg-white text-blue-700 shadow-sm">
+                <span class="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center font-mono text-[11px]">1</span>
+                <span>Connect & Clean</span>
+            </button>
+            <button onclick="switchTab('tab-reconstruct')" id="btn-tab-reconstruct" class="step-tab flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-xs font-bold transition-all text-slate-600 hover:text-slate-900">
+                <span class="w-5 h-5 rounded-full bg-slate-100 flex items-center justify-center font-mono text-[11px]">2</span>
+                <span>Temporal Graph</span>
+            </button>
+            <button onclick="switchTab('tab-verify')" id="btn-tab-verify" class="step-tab flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-xs font-bold transition-all text-slate-600 hover:text-slate-900">
+                <span class="w-5 h-5 rounded-full bg-slate-100 flex items-center justify-center font-mono text-[11px]">3</span>
+                <span>Verify & Conflicts (TRE)</span>
+            </button>
+            <button onclick="switchTab('tab-review')" id="btn-tab-review" class="step-tab flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-xs font-bold transition-all text-slate-600 hover:text-slate-900">
+                <span class="w-5 h-5 rounded-full bg-slate-100 flex items-center justify-center font-mono text-[11px]">4</span>
+                <span>HITL Review & Sign</span>
+            </button>
+            <button onclick="switchTab('tab-handover')" id="btn-tab-handover" class="step-tab flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-xs font-bold transition-all text-slate-600 hover:text-slate-900">
+                <span class="w-5 h-5 rounded-full bg-slate-100 flex items-center justify-center font-mono text-[11px]">5</span>
+                <span>Role Handover & Q&A</span>
+            </button>
+        </nav>
+
+        <!-- TAB 1: CONNECT & SANITIZE -->
+        <div id="tab-connect" class="tab-panel flex flex-col gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-mono text-slate-500 uppercase">Git Commits</span>
+                        <i data-lucide="git-commit" class="w-5 h-5 text-blue-600"></i>
+                    </div>
+                    <div class="font-heading font-extrabold text-3xl text-slate-900 mt-2">45</div>
+                    <span class="text-xs text-slate-500">Feature branches, hotfixes, diffs</span>
+                </div>
+                <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-mono text-slate-500 uppercase">Pull Requests</span>
+                        <i data-lucide="git-pull-request" class="w-5 h-5 text-purple-600"></i>
+                    </div>
+                    <div class="font-heading font-extrabold text-3xl text-slate-900 mt-2">20</div>
+                    <span class="text-xs text-slate-500">Architectural reviews & debates</span>
+                </div>
+                <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-mono text-slate-500 uppercase">Slack Messages</span>
+                        <i data-lucide="message-square" class="w-5 h-5 text-amber-600"></i>
+                    </div>
+                    <div class="font-heading font-extrabold text-3xl text-slate-900 mt-2">80</div>
+                    <span class="text-xs text-slate-500">War room, design decisions, spikes</span>
+                </div>
+                <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-mono text-slate-500 uppercase">Presidio Redactions</span>
+                        <i data-lucide="shield-check" class="w-5 h-5 text-emerald-600"></i>
+                    </div>
+                    <div class="font-heading font-extrabold text-3xl text-emerald-600 mt-2">100%</div>
+                    <span class="text-xs text-slate-500">Stripe keys, passwords, PII masked</span>
+                </div>
+            </div>
+
+            <!-- Zero Trust Security Details -->
+            <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                <div class="flex items-center justify-between mb-4 border-b pb-3">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="shield-alert" class="w-5 h-5 text-blue-600"></i>
+                        <h2 class="font-heading font-bold text-base text-slate-900">Zero-Trust Ingestion & Automated Secret Sanitization</h2>
+                    </div>
+                    <span class="text-xs font-mono bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded border border-emerald-200 font-bold">
+                        PRESIDIO REDACTOR ACTIVE
+                    </span>
+                </div>
+                <p class="text-sm text-slate-600 leading-relaxed mb-4">
+                    Before any raw digital exhaust is indexed into the knowledge graph or sent to LLM prompt contexts, it passes through our deterministic regex and Microsoft Presidio redaction pipeline. Live Stripe API secrets, AWS tokens, customer emails, and executive compensation figures are permanently masked.
+                </p>
+                <div class="bg-slate-900 rounded-lg p-4 font-mono text-xs text-slate-300 overflow-x-auto space-y-2">
+                    <div class="text-emerald-400 font-bold">// Sample Live Interception & Scrubbing:</div>
+                    <div><span class="text-slate-500">Original:</span> "Stripe live secret key is sk_mock_stripe_key_999988887777"</div>
+                    <div><span class="text-blue-400">Sanitized:</span> "Stripe live secret key is <span class="text-amber-300 font-bold">[REDACTED_STRIPE_SECRET_KEY]</span>"</div>
+                    <div class="mt-2"><span class="text-slate-500">Original:</span> "Alex's replacement salary bracket is approved between $140k-$165k"</div>
+                    <div><span class="text-blue-400">Sanitized:</span> "Alex's replacement salary bracket is approved between <span class="text-amber-300 font-bold">[REDACTED_FINANCIAL_FIGURE]</span>"</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: TEMPORAL RECONSTRUCT -->
+        <div id="tab-reconstruct" class="tab-panel hidden flex flex-col gap-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Left 2 Cols: Timeline & ADRs -->
+                <div class="lg:col-span-2 flex flex-col gap-6">
+                    <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                        <div class="flex items-center justify-between mb-4 border-b pb-3">
+                            <h2 class="font-heading font-bold text-base text-slate-900 flex items-center gap-2">
+                                <i data-lucide="git-merge" class="w-5 h-5 text-indigo-600"></i>
+                                Implicit Architectural Decision Records (ADRs) Extracted
+                            </h2>
+                            <span class="text-xs font-mono bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded font-bold">RECONSTRUCTED</span>
+                        </div>
+                        <div class="space-y-3">
+                            {% for adr in state.architecture_decisions %}
+                            <div class="p-4 rounded-lg bg-slate-50 border border-slate-200">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-heading font-bold text-sm text-slate-900">{{ adr.title }}</span>
+                                    <span class="text-xs font-mono bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-semibold">{{ adr.status }}</span>
+                                </div>
+                                <p class="text-xs text-slate-600 mt-2 leading-relaxed"><strong>Rationale:</strong> {{ adr.decision }}</p>
+                                <div class="text-[11px] font-mono text-blue-600 mt-2 flex items-center gap-1">
+                                    <i data-lucide="link" class="w-3.5 h-3.5"></i>
+                                    {{ adr.citation }}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Chronological Milestones -->
+                    <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                        <h2 class="font-heading font-bold text-base text-slate-900 mb-4 border-b pb-3 flex items-center gap-2">
+                            <i data-lucide="clock" class="w-5 h-5 text-blue-600"></i>
+                            Project Evolutionary Event Timeline
+                        </h2>
+                        <div class="space-y-3 max-h-80 overflow-y-auto pr-2">
+                            {% for evt in state.timeline %}
+                            <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-colors">
+                                <span class="font-mono text-xs px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-bold mt-0.5">{{ evt.type }}</span>
+                                <div class="flex-1">
+                                    <div class="flex items-center justify-between">
+                                        <div class="text-xs font-bold text-slate-900">{{ evt.title }}</div>
+                                        <span class="font-mono text-[11px] text-slate-400">{{ evt.timestamp[:10] }}</span>
+                                    </div>
+                                    <div class="text-[11px] text-slate-500 mt-0.5">By {{ evt.author }} • <span class="font-mono text-blue-600">{{ evt.source }}</span></div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Col: Directional Graph & Blockers -->
+                <div class="flex flex-col gap-6">
+                    <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                        <h2 class="font-heading font-bold text-base text-slate-900 mb-4 border-b pb-3 flex items-center gap-2">
+                            <i data-lucide="network" class="w-5 h-5 text-purple-600"></i>
+                            Causal Dependency Nodes
+                        </h2>
+                        <p class="text-xs text-slate-500 mb-3">Neo4j/NetworkX directional relationships between Jira issues and Git commit resolutions.</p>
+                        <div class="space-y-2">
+                            {% for edge in state.graph_edges %}
+                            <div class="p-2.5 rounded bg-purple-50/60 border border-purple-200 text-xs font-mono text-slate-700 flex items-center justify-between">
+                                <span>{{ edge.from }}</span>
+                                <span class="text-purple-600 font-bold">&rarr; {{ edge.relation }} &rarr;</span>
+                                <span class="font-bold text-slate-900">{{ edge.to }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-rose-200 rounded-xl p-6 shadow-sm bg-rose-50/30">
+                        <h2 class="font-heading font-bold text-base text-rose-900 mb-3 flex items-center gap-2">
+                            <i data-lucide="alert-octagon" class="w-5 h-5 text-rose-600"></i>
+                            Active Technical Blockers
+                        </h2>
+                        {% for b in state.active_blockers %}
+                        <div class="p-3 bg-white rounded-lg border border-rose-200 shadow-xs">
+                            <div class="flex items-center justify-between">
+                                <span class="font-mono font-bold text-xs text-rose-700">{{ b.key }}</span>
+                                <span class="text-[11px] font-bold text-slate-700">{{ b.assignee }}</span>
+                            </div>
+                            <div class="text-xs font-bold text-slate-900 mt-1">{{ b.summary }}</div>
+                            <p class="text-xs text-slate-600 mt-1.5">{{ b.notes }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: VERIFY & CONFLICTS (TRE) -->
+        <div id="tab-verify" class="tab-panel hidden flex flex-col gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-white border border-emerald-200 rounded-xl p-5 shadow-sm bg-emerald-50/30">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-mono text-emerald-800 uppercase font-bold">Grounded Claim Ratio</span>
+                        <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-600"></i>
+                    </div>
+                    <div class="font-heading font-extrabold text-3xl text-emerald-700 mt-2">1.0 (100%)</div>
+                    <span class="text-xs text-slate-500">Every claim has verifiable citation</span>
+                </div>
+                <div class="bg-white border border-amber-200 rounded-xl p-5 shadow-sm bg-amber-50/30">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-mono text-amber-800 uppercase font-bold">Detected Conflicts</span>
+                        <i data-lucide="alert-triangle" class="w-5 h-5 text-amber-600"></i>
+                    </div>
+                    <div class="font-heading font-extrabold text-3xl text-amber-700 mt-2">{{ tre.total_conflicts }} Alert</div>
+                    <span class="text-xs text-slate-500">Cross-source chat vs PR divergence</span>
+                </div>
+                <div class="bg-white border border-rose-200 rounded-xl p-5 shadow-sm bg-rose-50/30">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-mono text-rose-800 uppercase font-bold">Missing Evidence Gaps</span>
+                        <i data-lucide="help-circle" class="w-5 h-5 text-rose-600"></i>
+                    </div>
+                    <div class="font-heading font-extrabold text-3xl text-rose-700 mt-2">{{ tre.total_gaps }} Alert</div>
+                    <span class="text-xs text-slate-500">Undocumented staging secrets</span>
+                </div>
+            </div>
+
+            <!-- Contradiction Detection Spotlight -->
+            <div class="bg-white border border-amber-300 rounded-xl p-6 shadow-sm">
+                <div class="flex items-center justify-between border-b pb-3 mb-4">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="git-compare" class="w-5 h-5 text-amber-600"></i>
+                        <h2 class="font-heading font-bold text-base text-slate-900">Temporal Reconciliation Engine: Cross-Source Conflict Circuit Breaker</h2>
+                    </div>
+                    <span class="text-xs font-mono bg-amber-100 text-amber-800 px-2.5 py-1 rounded font-bold">
+                        [CONFLICT_DETECTED] CIRCUIT BREAKER
+                    </span>
+                </div>
+
+                {% for conflict in tre.detected_conflicts %}
+                <div class="bg-amber-50/50 border border-amber-200 rounded-xl p-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="font-heading font-bold text-sm text-slate-900">{{ conflict.topic }}: {{ conflict.statement }}</span>
+                        <span class="text-xs font-mono bg-rose-100 text-rose-800 px-2 py-0.5 rounded font-bold">UNRESOLVED BY NAIVE LLMS</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                        <div class="bg-white p-3 rounded-lg border border-slate-200 text-xs">
+                            <div class="font-mono font-bold text-blue-600 mb-1 flex items-center gap-1">
+                                <i data-lucide="message-square" class="w-3.5 h-3.5"></i>
+                                Citation A: {{ conflict.citation_a.source }}
+                            </div>
+                            <p class="text-slate-700 italic">"{{ conflict.citation_a.text }}"</p>
+                        </div>
+                        <div class="bg-white p-3 rounded-lg border border-slate-200 text-xs">
+                            <div class="font-mono font-bold text-purple-600 mb-1 flex items-center gap-1">
+                                <i data-lucide="git-pull-request" class="w-3.5 h-3.5"></i>
+                                Citation B: {{ conflict.citation_b.source }}
+                            </div>
+                            <p class="text-slate-700 italic">"{{ conflict.citation_b.text }}"</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 flex items-center justify-between bg-white p-3 rounded-lg border border-amber-200">
+                        <div class="text-xs text-slate-700">
+                            <strong>Engine Recommendation:</strong> {{ conflict.suggested_resolution }}
+                        </div>
+                        <button onclick="switchTab('tab-review')" class="px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-sm transition-colors flex items-center gap-1">
+                            Resolve in Step 4 Cockpit &rarr;
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Verified Claims Table -->
+            <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                <h2 class="font-heading font-bold text-base text-slate-900 mb-4 border-b pb-3 flex items-center gap-2">
+                    <i data-lucide="check-check" class="w-5 h-5 text-emerald-600"></i>
+                    Evidence-Grounded Verified Claims
+                </h2>
+                <div class="space-y-3">
+                    {% for claim in tre.verified_claims %}
+                    <div class="p-4 rounded-lg bg-slate-50 border border-slate-200">
+                        <div class="flex items-center justify-between">
+                            <span class="font-heading font-bold text-sm text-slate-900">{{ claim.topic }}</span>
+                            <span class="text-xs font-mono bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded font-bold">Confidence: {{ (claim.confidence * 100) | round(1) }}%</span>
+                        </div>
+                        <p class="text-xs text-slate-700 mt-1.5 leading-relaxed">{{ claim.statement }}</p>
+                        <div class="mt-2 text-xs font-mono text-blue-600 bg-blue-50/70 p-2 rounded border border-blue-100 flex items-center justify-between">
+                            <span>Citation Pin: {{ claim.citation }}</span>
+                            <span class="text-slate-400 font-normal">Evidence: {{ claim.evidence_text }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: REVIEW & APPROVE (HITL COCKPIT) -->
+        <div id="tab-review" class="tab-panel hidden flex flex-col gap-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- 1-Click Conflict Resolution Box -->
+                <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                    <div class="flex items-center gap-2 border-b pb-3 mb-4">
+                        <i data-lucide="check-square" class="w-5 h-5 text-indigo-600"></i>
+                        <h2 class="font-heading font-bold text-base text-slate-900">Human-in-the-Loop Conflict Resolution</h2>
+                    </div>
+                    <p class="text-xs text-slate-600 mb-4">
+                        Review the detected contradiction regarding Caching Strategy. As the departing engineer or lead, execute a 1-click binding resolution for the handover record.
+                    </p>
+
+                    <div id="resolution-status-box" class="p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs mb-4">
+                        <span class="font-bold text-amber-800">Pending Resolution:</span> Memcached proposal in Slack vs Redis Cluster in merged code.
+                    </div>
+
+                    <div class="space-y-3">
+                        <button onclick="resolveConflict('Redis Cluster Retained, Memcached Rejected')" class="w-full py-2.5 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-sm transition-all text-left flex items-center justify-between">
+                            <span>1. Confirm: Redis Cluster Retained (Memcached spike abandoned)</span>
+                            <i data-lucide="check" class="w-4 h-4"></i>
+                        </button>
+                        <button onclick="resolveConflict('Memcached Migration in Progress')" class="w-full py-2.5 px-4 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition-all text-left flex items-center justify-between">
+                            <span>2. Override: Memcached Migration still planned</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+
+                    <div class="mt-6 border-t pt-4">
+                        <h3 class="font-heading font-bold text-xs text-slate-900 uppercase tracking-wider mb-2">Add Tacit Context Note</h3>
+                        <div class="flex gap-2">
+                            <input id="tacit-input" type="text" placeholder="E.g. Remember to rotate Stripe staging webhook secret..." class="flex-1 border border-slate-300 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <button onclick="submitTacitNote()" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-lg transition-colors">
+                                Add Note
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Two-Party Cryptographic Signoff -->
+                <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-2 border-b pb-3 mb-4">
+                            <i data-lucide="badge-check" class="w-5 h-5 text-emerald-600"></i>
+                            <h2 class="font-heading font-bold text-base text-slate-900">Two-Party Cryptographic Handover Signoff</h2>
+                        </div>
+                        <p class="text-xs text-slate-600 mb-4 leading-relaxed">
+                            Completing the handover generates an immutable, tamper-evident SHA-256 certificate for corporate HR, engineering compliance, and audit records.
+                        </p>
+
+                        <div class="space-y-3 mb-4">
+                            <div>
+                                <label class="text-xs font-bold text-slate-700">Signer Full Name</label>
+                                <input id="signer-name" type="text" value="Prince Kumar" class="w-full mt-1 border border-slate-300 rounded-lg px-3 py-2 text-xs font-medium">
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-slate-700">Role / Designation</label>
+                                <input id="signer-role" type="text" value="Team Lead & AI Architect" class="w-full mt-1 border border-slate-300 rounded-lg px-3 py-2 text-xs font-medium">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <button onclick="executeSignoff()" id="btn-sign" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-heading font-bold text-sm rounded-lg shadow-md transition-all flex items-center justify-center gap-2">
+                            <i data-lucide="lock" class="w-4 h-4"></i>
+                            Sign & Issue Handover Certificate
+                        </button>
+
+                        <div id="signoff-certificate-box" class="mt-4 p-4 rounded-lg bg-emerald-50 border border-emerald-200 text-xs font-mono text-emerald-900 hidden">
+                            <div class="font-bold flex items-center gap-1.5 text-emerald-800">
+                                <i data-lucide="shield-check" class="w-4 h-4"></i>
+                                CERTIFICATE VALID & SIGNED
+                            </div>
+                            <div class="mt-2 text-[11px] break-all" id="cert-hash-val"></div>
+                            <div class="mt-1 text-[11px] text-emerald-700" id="cert-block-val"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 5: ROLE HANDOVER & GROUNDED Q&A -->
+        <div id="tab-handover" class="tab-panel hidden flex flex-col gap-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Left 2 Cols: Role Projection Views -->
+                <div class="lg:col-span-2 flex flex-col gap-6">
+                    <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                        <div class="flex items-center justify-between border-b pb-3 mb-4">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="users" class="w-5 h-5 text-blue-600"></i>
+                                <h2 class="font-heading font-bold text-base text-slate-900">Role-Governed Handover Projection</h2>
+                            </div>
+                            <!-- Role Switcher -->
+                            <div class="flex bg-slate-100 p-1 rounded-lg border border-slate-200 text-xs font-bold">
+                                <button onclick="fetchRoleView('engineering')" id="btn-role-eng" class="px-3 py-1 rounded bg-white text-blue-700 shadow-xs">Lead/Dev View</button>
+                                <button onclick="fetchRoleView('product')" id="btn-role-pm" class="px-3 py-1 rounded text-slate-600 hover:text-slate-900">PM View</button>
+                                <button onclick="fetchRoleView('contractor')" id="btn-role-con" class="px-3 py-1 rounded text-slate-600 hover:text-slate-900">Contractor Sandbox</button>
+                            </div>
+                        </div>
+
+                        <div id="role-display-box" class="space-y-4">
+                            <div class="p-3 bg-blue-50/60 border border-blue-200 rounded-lg text-xs font-medium text-blue-900" id="role-summary-banner">
+                                Showing Tier-1 Internal Engineering View: Full technical architectural briefing with unmerged branches, test coverage, and code-level citations.
+                            </div>
+
+                            <div class="border-t pt-3">
+                                <h3 class="font-heading font-bold text-xs text-slate-900 uppercase tracking-wider mb-2">First 30 Days Actionable Priority Checklist</h3>
+                                <div class="space-y-2" id="first-30-days-list">
+                                    <div class="p-2.5 rounded bg-slate-50 border border-slate-200 text-xs flex items-center justify-between">
+                                        <span class="font-bold text-blue-700 font-mono">Day 1-3</span>
+                                        <span class="text-slate-800">Clone repository and verify local environment with Docker Compose</span>
+                                    </div>
+                                    <div class="p-2.5 rounded bg-slate-50 border border-slate-200 text-xs flex items-center justify-between">
+                                        <span class="font-bold text-blue-700 font-mono">Day 4-7</span>
+                                        <span class="text-slate-800">Inspect src/auth/jwt.py and rotating HMAC keys (ADR-002)</span>
+                                    </div>
+                                    <div class="p-2.5 rounded bg-slate-50 border border-slate-200 text-xs flex items-center justify-between">
+                                        <span class="font-bold text-blue-700 font-mono">Day 8-14</span>
+                                        <span class="text-slate-800">Resolve Jira OPS-412: Automate X_INTERNAL_SYNC_SALT in CI/CD</span>
+                                    </div>
+                                    <div class="p-2.5 rounded bg-slate-50 border border-slate-200 text-xs flex items-center justify-between">
+                                        <span class="font-bold text-blue-700 font-mono">Day 15-30</span>
+                                        <span class="text-slate-800">Review Redis Cluster connection pool performance under load</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Col: Interactive "Ask This Handover" Grounded Assistant -->
+                <div class="flex flex-col gap-4">
+                    <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm flex-1 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center gap-2 border-b pb-3 mb-3">
+                                <i data-lucide="bot" class="w-5 h-5 text-indigo-600"></i>
+                                <h2 class="font-heading font-bold text-base text-slate-900">"Ask This Handover" Assistant</h2>
+                            </div>
+                            <p class="text-xs text-slate-500 mb-3 leading-relaxed">
+                                Strictly grounded conversational search with citations. Refuses to speculate if evidence is missing.
+                            </p>
+
+                            <!-- Quick Query Chips -->
+                            <div class="flex flex-wrap gap-1.5 mb-3">
+                                <button onclick="runSampleAsk('Why do we use custom auth instead of Supabase?')" class="text-[11px] bg-slate-100 hover:bg-slate-200 px-2 py-1 rounded-md text-slate-700">Why custom auth?</button>
+                                <button onclick="runSampleAsk('Why was Memcached dropped for Redis?')" class="text-[11px] bg-slate-100 hover:bg-slate-200 px-2 py-1 rounded-md text-slate-700">Redis vs Memcached?</button>
+                                <button onclick="runSampleAsk('What is the sync salt issue?')" class="text-[11px] bg-slate-100 hover:bg-slate-200 px-2 py-1 rounded-md text-slate-700">Sync salt blocker?</button>
+                            </div>
+
+                            <!-- Chat Output Box -->
+                            <div id="ask-response-box" class="p-3.5 rounded-lg bg-slate-50 border border-slate-200 text-xs min-h-[140px] flex flex-col justify-between">
+                                <div id="ask-answer" class="text-slate-700 leading-relaxed">
+                                    Click a sample query or ask any question about the project state below.
+                                </div>
+                                <div id="ask-citations" class="mt-2 text-[11px] font-mono text-blue-600 hidden"></div>
+                            </div>
+                        </div>
+
+                        <!-- Chat Input -->
+                        <div class="mt-3 flex gap-2">
+                            <input id="ask-input" type="text" placeholder="Ask about architecture, blockers, decisions..." class="flex-1 border border-slate-300 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <button onclick="submitAskQuery()" class="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-lg transition-colors">
+                                Ask
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-4 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500 font-mono">
+            <div>CONTINUUMAI • VALERION CODERS (PRINCE KUMAR & YASH SHARMA)</div>
+            <div>ROUND 2: THE BUILD • 100% FUNCTIONAL END-TO-END</div>
+        </div>
+    </footer>
+
+    <!-- Interactive Client JavaScript -->
+    <script>
+        lucide.createIcons();
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+            document.querySelectorAll('.step-tab').forEach(b => {
+                b.classList.remove('bg-white', 'text-blue-700', 'shadow-sm');
+                b.classList.add('text-slate-600');
+            });
+            document.getElementById(tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.classList.add('bg-white', 'text-blue-700', 'shadow-sm');
+            activeBtn.classList.remove('text-slate-600');
+        }
+
+        async function resolveConflict(decision) {
+            const res = await fetch('/api/resolve_conflict', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    conflict_id: 'conflict_01',
+                    decision: decision,
+                    notes: 'Resolved via HITL Cockpit by Lead Architect',
+                    approver: 'Prince Kumar'
+                })
+            });
+            const data = await res.json();
+            const box = document.getElementById('resolution-status-box');
+            box.className = 'p-3 bg-emerald-50 border border-emerald-300 rounded-lg text-xs mb-4 text-emerald-800 font-bold flex items-center justify-between';
+            box.innerHTML = `<span>Resolved: ${data.decision}</span><span class="font-mono text-[11px] text-emerald-600">CONFIRMED</span>`;
+        }
+
+        async function submitTacitNote() {
+            const input = document.getElementById('tacit-input');
+            const val = input.value.trim();
+            if (!val) return;
+            await fetch('/api/add_note', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ author: 'Prince Kumar (Lead)', content: val })
+            });
+            input.value = '';
+            alert('Tacit note added to Handover Ledger!');
+        }
+
+        async function executeSignoff() {
+            const name = document.getElementById('signer-name').value;
+            const role = document.getElementById('signer-role').value;
+            const res = await fetch('/api/sign', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ signer_name: name, signer_role: role })
+            });
+            const data = await res.json();
+            const box = document.getElementById('signoff-certificate-box');
+            box.classList.remove('hidden');
+            document.getElementById('cert-hash-val').innerText = 'SHA-256: ' + data.certificate_hash;
+            document.getElementById('cert-block-val').innerText = 'Audit Ledger ID: ' + data.audit_ledger_block + ' @ ' + data.timestamp;
+            document.getElementById('btn-sign').innerText = 'Signed & Certified';
+            document.getElementById('btn-sign').classList.replace('bg-emerald-600', 'bg-slate-700');
+        }
+
+        async function fetchRoleView(role) {
+            ['eng', 'pm', 'con'].forEach(r => {
+                const btn = document.getElementById('btn-role-' + r);
+                btn.className = 'px-3 py-1 rounded text-slate-600 hover:text-slate-900';
+            });
+            const activeId = role === 'engineering' ? 'eng' : (role === 'product' ? 'pm' : 'con');
+            document.getElementById('btn-role-' + activeId).className = 'px-3 py-1 rounded bg-white text-blue-700 shadow-xs font-bold';
+
+            const res = await fetch('/api/handover/' + role);
+            const data = await res.json();
+            document.getElementById('role-summary-banner').innerText = `Showing ${data.clearance_level}: ${data.summary}`;
+
+            const list = document.getElementById('first-30-days-list');
+            list.innerHTML = '';
+            data.first_30_days_tasks.forEach(item => {
+                list.innerHTML += `
+                    <div class="p-2.5 rounded bg-slate-50 border border-slate-200 text-xs flex items-center justify-between">
+                        <span class="font-bold text-blue-700 font-mono">${item.day}</span>
+                        <span class="text-slate-800">${item.task}</span>
+                    </div>
+                `;
+            });
+        }
+
+        async function runSampleAsk(q) {
+            document.getElementById('ask-input').value = q;
+            submitAskQuery();
+        }
+
+        async function submitAskQuery() {
+            const q = document.getElementById('ask-input').value.trim();
+            if (!q) return;
+            const res = await fetch('/api/ask', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query: q })
+            });
+            const data = await res.json();
+            document.getElementById('ask-answer').innerText = data.answer;
+            const citBox = document.getElementById('ask-citations');
+            if (data.citations && data.citations.length > 0) {
+                citBox.classList.remove('hidden');
+                citBox.innerHTML = '<strong>Citations:</strong> ' + data.citations.map(c => c.source).join(' | ');
+            } else {
+                citBox.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
