@@ -45,18 +45,14 @@ app.add_middleware(
 
 # Static and Templates
 templates_dir = os.path.join(CURRENT_DIR, "templates")
-static_dir = os.path.join(CURRENT_DIR, "static")
-
-if not os.path.exists(static_dir):
-    os.makedirs(static_dir, exist_ok=True)
-
 templates = Jinja2Templates(directory=templates_dir)
 
-if os.path.exists(static_dir):
+static_dir = os.path.join(CURRENT_DIR, "static")
+if os.path.isdir(static_dir):
     try:
         app.mount("/static", StaticFiles(directory=static_dir), name="static")
     except Exception as e:
-        print(f"Notice: Static mount skipped: {e}")
+        pass
 
 class ConflictResolutionRequest(BaseModel):
     conflict_id: str
@@ -76,44 +72,30 @@ class SignHandoverRequest(BaseModel):
 class AskQueryRequest(BaseModel):
     query: str
 
-def fetch_from_server_or_local(endpoint: str, local_fallback_fn):
-    """Fetches data from bound Vercel service or falls back to local direct call."""
-    if SERVER_SERVICE_URL:
-        try:
-            resp = requests.get(f"{SERVER_SERVICE_URL}/{endpoint.lstrip('/')}", timeout=4)
-            if resp.status_code == 200:
-                return resp.json()
-        except Exception as e:
-            print(f"Notice: Call to bound server {SERVER_SERVICE_URL} failed, falling back to local: {e}")
-    return local_fallback_fn()
-
 # ----------------- WEB FRONTEND ROUTE -----------------
 @app.get("/", response_class=HTMLResponse)
 async def serve_dashboard(request: Request):
     """Serves the main interactive Next/Tailwind style dashboard."""
-    raw_sources = engine.load_raw_sources()
-    
-    state = fetch_from_server_or_local(
-        "api/reconstruct",
-        lambda: engine.reconstruct_project_state(raw_sources)
-    )
-    tre_data = fetch_from_server_or_local(
-        "api/verify",
-        lambda: tre.verify_and_reconcile(raw_sources, state)
-    )
-    review_state = fetch_from_server_or_local(
-        "api/ledger",
-        lambda: ledger.get_review_state()
-    )
+    try:
+        raw_sources = engine.load_raw_sources()
+        state = engine.reconstruct_project_state(raw_sources)
+        tre_data = tre.verify_and_reconcile(raw_sources, state)
+        review_state = ledger.get_review_state()
 
-    return templates.TemplateResponse("index.html", {
-        "request": request,
-        "state": state,
-        "tre": tre_data,
-        "review": review_state,
-        "version": "2.0.0 (Round 2 Multi-Service Build)",
-        "server_bound": bool(SERVER_SERVICE_URL)
-    })
+        return templates.TemplateResponse("index.html", {
+            "request": request,
+            "state": state,
+            "tre": tre_data,
+            "review": review_state,
+            "version": "2.0.0 (Round 2 Multi-Service Build)",
+            "server_bound": True
+        })
+    except Exception as e:
+        import traceback
+        return HTMLResponse(
+            content=f"<h1>ContinuumAI Service Error</h1><pre>{traceback.format_exc()}</pre>",
+            status_code=500
+        )
 
 # ----------------- GATEWAY API FALLBACK ROUTES -----------------
 # When public rewrites route /api/* to the server service, client requests hit server directly.
@@ -156,52 +138,33 @@ def get_sources_endpoint():
 
 @app.get("/api/reconstruct")
 def reconstruct_endpoint():
-    return fetch_from_server_or_local("api/reconstruct", lambda: engine.reconstruct_project_state())
+    raw = engine.load_raw_sources()
+    return engine.reconstruct_project_state(raw)
 
 @app.get("/api/verify")
 def verify_endpoint():
     raw = engine.load_raw_sources()
     state = engine.reconstruct_project_state(raw)
-    return fetch_from_server_or_local("api/verify", lambda: tre.verify_and_reconcile(raw, state))
+    return tre.verify_and_reconcile(raw, state)
 
 @app.get("/api/ledger")
 def get_ledger_endpoint():
-    return fetch_from_server_or_local("api/ledger", lambda: ledger.get_review_state())
+    return ledger.get_review_state()
 
 @app.post("/api/resolve_conflict")
 def resolve_conflict_endpoint(req: ConflictResolutionRequest):
-    if SERVER_SERVICE_URL:
-        try:
-            return requests.post(f"{SERVER_SERVICE_URL}/api/resolve_conflict", json=req.dict(), timeout=3).json()
-        except Exception:
-            pass
     return ledger.resolve_conflict(req.conflict_id, req.decision, req.notes, req.approver)
 
 @app.post("/api/add_note")
 def add_note_endpoint(req: TacitNoteRequest):
-    if SERVER_SERVICE_URL:
-        try:
-            return requests.post(f"{SERVER_SERVICE_URL}/api/add_note", json=req.dict(), timeout=3).json()
-        except Exception:
-            pass
     return ledger.add_tacit_note(req.author, req.content)
 
 @app.post("/api/sign")
 def sign_handover_endpoint(req: SignHandoverRequest):
-    if SERVER_SERVICE_URL:
-        try:
-            return requests.post(f"{SERVER_SERVICE_URL}/api/sign", json=req.dict(), timeout=3).json()
-        except Exception:
-            pass
     return ledger.sign_handover(req.signer_name, req.signer_role, req.project_name)
 
 @app.get("/api/handover/{role}")
 def get_role_handover_endpoint(role: str):
-    if SERVER_SERVICE_URL:
-        try:
-            return requests.get(f"{SERVER_SERVICE_URL}/api/handover/{role}", timeout=3).json()
-        except Exception:
-            pass
     raw = engine.load_raw_sources()
     state = engine.reconstruct_project_state(raw)
     tre_data = tre.verify_and_reconcile(raw, state)
@@ -209,11 +172,6 @@ def get_role_handover_endpoint(role: str):
 
 @app.post("/api/ask")
 def ask_handover_assistant_endpoint(req: AskQueryRequest):
-    if SERVER_SERVICE_URL:
-        try:
-            return requests.post(f"{SERVER_SERVICE_URL}/api/ask", json=req.dict(), timeout=3).json()
-        except Exception:
-            pass
     raw = engine.load_raw_sources()
     state = engine.reconstruct_project_state(raw)
     tre_data = tre.verify_and_reconcile(raw, state)

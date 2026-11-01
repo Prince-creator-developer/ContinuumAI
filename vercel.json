@@ -4,18 +4,12 @@
     "app": {
       "root": ".",
       "framework": "fastapi",
-      "bindings": [
-        {
-          "type": "service",
-          "service": "server",
-          "format": "url",
-          "env": "SERVER_URL"
-        }
-      ]
+      "entrypoint": "main:app"
     },
     "server": {
       "root": "server",
-      "framework": "fastapi"
+      "framework": "fastapi",
+      "entrypoint": "main:app"
     }
   },
   "rewrites": [
