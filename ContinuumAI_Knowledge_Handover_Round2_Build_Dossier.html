@@ -371,6 +371,11 @@
             <div class="cover-subtitle-text">
                 Round 2 Operational Build: 5-Step Core Engine Running End-to-End
             </div>
+            <div style="margin: 6px 0; display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px; background: #eff6ff; border: 1.5px solid #93c5fd; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 8.5pt;">
+                <span style="color: #1e40af; font-weight: 700;">🌐 Live Functioning Product:</span>
+                <a href="https://continuumai-g9ej.vercel.app" style="color: #2563eb; font-weight: 800; text-decoration: underline;">https://continuumai-g9ej.vercel.app</a>
+                <span style="color: #059669; font-weight: 700; background: #dcfce7; padding: 1px 6px; border-radius: 4px; font-size: 7pt;">ONLINE</span>
+            </div>
             <div class="cover-problem-tagline">
                 <strong>Problem Statement:</strong> <em>"Prevent Critical Knowledge From Leaving With People: Build a system that converts scattered project activity into a usable, verified, and role-appropriate handover when a team member leaves."</em>
             </div>
@@ -453,7 +458,7 @@
             <div class="cover-team-card" style="border-left: 4px solid #059669;">
                 <div style="font-size: 7.2pt; font-family: 'JetBrains Mono'; color: #64748b; font-weight: 700; text-transform: uppercase;">Submission Coordinates</div>
                 <div style="font-family: 'Space Grotesk'; font-size: 11pt; font-weight: 800; color: #0f172a; margin: 2px 0;">Round 2 — The Build</div>
-                <div style="font-size: 7.8pt; color: #475569; line-height: 1.4;">GitHub Repo: Prince-creator-developer/ContinuumAI • 100/100 Evaluation Rubric Targeted • Fully Demonstrable</div>
+                <div style="font-size: 7.8pt; color: #475569; line-height: 1.4;"><strong>Live App:</strong> <a href="https://continuumai-g9ej.vercel.app" style="color: #2563eb; text-decoration: underline; font-weight: 700;">continuumai-g9ej.vercel.app</a><br>GitHub: Prince-creator-developer/ContinuumAI • 100/100 Rubric Targeted</div>
             </div>
         </div>
     </div>
@@ -536,7 +541,7 @@
         <div class="card card-accent-emerald" style="padding: 10px 14px;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <span style="font-size: 8.8pt; font-weight: 700; color: #0f172a;">
-                    Verification Benchmark: 7 of 7 automated unit and integration tests passing in <code>test_engine.py</code>.
+                    Verification Benchmark: 21 of 21 automated unit and regression tests passing (<code>test_engine.py</code> & <code>test_regression.py</code>).
                 </span>
                 <span class="badge-pill badge-emerald">100% REGRESSION TEST PASS RATE</span>
             </div>
@@ -1032,36 +1037,42 @@
     <div class="slide-content-body">
         <div class="grid-2" style="margin-bottom: 12px;">
             <div class="card card-accent-blue">
-                <div class="card-title">Official Repository & Coordinates</div>
-                <div class="space-y-3 font-mono text-xs">
-                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
-                        <span class="text-slate-500">GitHub Repository:</span><br>
-                        <strong class="text-blue-700 font-bold">https://github.com/Prince-creator-developer/ContinuumAI</strong>
+                <div class="card-title">Official Repository & Live Product Coordinates</div>
+                <div class="space-y-2.5 font-mono text-xs">
+                    <div class="p-2.5 bg-blue-50 border border-blue-200 rounded-lg">
+                        <span class="text-blue-700 font-bold">🌐 Functioning Deployed Product:</span><br>
+                        <a href="https://continuumai-g9ej.vercel.app" class="text-blue-900 font-bold underline text-[9.5pt]">https://continuumai-g9ej.vercel.app</a>
+                        <div class="text-slate-600 font-sans text-[7.5pt] mt-0.5">Live Vercel Multi-Service Platform • Instant Browser Access • No tokens or setup needed</div>
                     </div>
-                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
-                        <span class="text-slate-500">Registered Team Name:</span><br>
-                        <strong class="text-slate-900 font-bold">Valerion Coders</strong>
+                    <div class="p-2.5 bg-slate-50 border border-slate-200 rounded-lg">
+                        <span class="text-slate-500 font-bold">📂 Public Source-Code Repository:</span><br>
+                        <a href="https://github.com/Prince-creator-developer/ContinuumAI" class="text-blue-700 font-bold text-[9pt]">https://github.com/Prince-creator-developer/ContinuumAI</a>
                     </div>
-                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
-                        <span class="text-slate-500">Participants:</span><br>
-                        <strong class="text-slate-900">Prince Kumar</strong> (Team Lead & AI Architect)<br>
-                        <strong class="text-slate-900">Yash Sharma</strong> (Full-Stack & UI/UX Specialist)
+                    <div class="p-2 bg-slate-50 border border-slate-200 rounded-lg flex justify-between">
+                        <div><span class="text-slate-500">Team:</span> <strong class="text-slate-900">Valerion Coders</strong></div>
+                        <div><span class="text-slate-500">Track:</span> <strong class="text-slate-900">We Code Coders</strong></div>
+                    </div>
+                    <div class="p-2 bg-slate-50 border border-slate-200 rounded-lg">
+                        <span class="text-slate-500">Participants:</span> 
+                        <strong class="text-slate-900">Prince Kumar</strong> (Lead) & <strong class="text-slate-900">Yash Sharma</strong> (Full-Stack)
                     </div>
                 </div>
             </div>
 
             <div class="card card-accent-purple">
-                <div class="card-title">How to Run & Verify in Under 60 Seconds</div>
-                <div class="bg-slate-900 text-slate-200 p-3.5 rounded-lg font-mono text-xs space-y-2">
-                    <div class="text-emerald-400 font-bold"># 1. Clone & Enter Repository</div>
-                    <div>git clone https://github.com/Prince-creator-developer/ContinuumAI.git</div>
-                    <div>cd ContinuumAI</div>
-                    <div class="text-emerald-400 font-bold mt-2"># 2. Install Requirements & Run Tests</div>
-                    <div>pip install -r requirements.txt</div>
-                    <div>python -m pytest test_engine.py</div>
-                    <div class="text-emerald-400 font-bold mt-2"># 3. Launch Local Web Server</div>
-                    <div>python app.py</div>
-                    <div class="text-blue-300 font-bold mt-1"># Open http://localhost:8000 in your browser!</div>
+                <div class="card-title">Verification Instructions for Judges</div>
+                <div class="space-y-2.5 font-mono text-xs">
+                    <div class="p-2.5 bg-emerald-50 border border-emerald-200 rounded-lg text-slate-800">
+                        <div class="text-emerald-700 font-bold mb-0.5">Option 1: Instant Cloud Evaluation (Recommended)</div>
+                        <div class="font-sans text-[7.8pt] text-slate-700">Open <strong><a href="https://continuumai-g9ej.vercel.app" style="color: #2563eb; text-decoration: underline;">https://continuumai-g9ej.vercel.app</a></strong> directly in any browser. You can test all 5 workflow stages, inspect PII redaction, resolve conflicts, and test grounded RAG in 30 seconds.</div>
+                    </div>
+                    <div class="bg-slate-900 text-slate-200 p-2.5 rounded-lg text-[7.8pt] space-y-1">
+                        <div class="text-purple-300 font-bold">Option 2: Local 60-Second Reproduction</div>
+                        <div>git clone https://github.com/Prince-creator-developer/ContinuumAI.git</div>
+                        <div>cd ContinuumAI && pip install -r requirements.txt</div>
+                        <div class="text-emerald-400">python -m pytest test_engine.py test_regression.py  # 21/21 Pass</div>
+                        <div class="text-blue-300">python app.py  # Open http://localhost:8000 in browser</div>
+                    </div>
                 </div>
             </div>
         </div>

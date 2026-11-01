@@ -2,23 +2,32 @@
 
 <div align="center">
 
-![ContinuumAI Banner](https://img.shields.io/badge/ContinuumAI-Round%202%20Operational%20Build-2563eb?style=for-the-badge)
+[![Live Working Product](https://img.shields.io/badge/Live%20Deployment-continuumai--g9ej.vercel.app-2563eb?style=for-the-badge&logo=vercel)](https://continuumai-g9ej.vercel.app)
 [![Round 2: The Build](https://img.shields.io/badge/Hackathon-Round%202%3A%20The%20Build%20(100%20Pts)-10b981?style=for-the-badge)](./ContinuumAI_Knowledge_Handover_Round2_Build_Dossier.pdf)
-[![Tests Passing](https://img.shields.io/badge/Tests-7%2F7%20Passing%20(100%25)-059669?style=for-the-badge)](./test_engine.py)
+[![Tests Passing](https://img.shields.io/badge/Tests-21%2F21%20Passing%20(100%25)-059669?style=for-the-badge)](./test_regression.py)
 [![Track](https://img.shields.io/badge/Track-We%20Code%20Coders-7c3aed?style=for-the-badge)](#team-valerion-coders)
 [![License: MIT](https://img.shields.io/badge/License-MIT-0891b2?style=for-the-badge)](./LICENSE)
 
 **Prevent Critical Knowledge From Leaving With People**  
-*Autonomous Project State Reconstruction from Disparate Digital Exhaust with Permission-Aware Evidence Graphs and Human-in-the-Loop Verification.*
+*Autonomous Project State Reconstruction from Disparate Digital Exhaust with Permission-Aware Evidence Graphs, Temporal Contradiction Circuit Breakers, and Human-in-the-Loop Signoff.*
 
-[📄 View Round 2 Build Dossier (PDF)](./ContinuumAI_Knowledge_Handover_Round2_Build_Dossier.pdf) • [🌐 Launch Web Dashboard (HTML)](./templates/index.html) • [🧪 Run Automated Test Suite (pytest)](./test_engine.py)
+### 🌐 [Click Here to Open Live Functioning Product on Vercel](https://continuumai-g9ej.vercel.app)
+
+[📄 View Round 2 Build Dossier (PDF)](./ContinuumAI_Knowledge_Handover_Round2_Build_Dossier.pdf) • [🧪 Run Automated Regression Test Suite](./test_regression.py) • [🏛️ GitHub Source Repository](https://github.com/Prince-creator-developer/ContinuumAI)
 
 </div>
 
 ---
 
-## 🚀 Quickstart for Hackathon Judges (Run in Under 60 Seconds)
+## 🚀 How Hackathon Judges Can Verify (2 Options)
 
+### Option 1: Instant Cloud Evaluation (Zero Setup — Recommended)
+Navigate directly to **[https://continuumai-g9ej.vercel.app](https://continuumai-g9ej.vercel.app)** in any desktop or mobile browser.
+* All 5 core workflow steps run live on cloud serverless infrastructure.
+* No API keys, tokens, or environment setup required.
+* 100% verifiable from end-to-end in under 30 seconds.
+
+### Option 2: Local 60-Second Reproduction
 ContinuumAI is engineered as a unified, high-performance web service with zero complex multi-terminal setup:
 
 ```bash
@@ -26,9 +35,9 @@ ContinuumAI is engineered as a unified, high-performance web service with zero c
 git clone https://github.com/Prince-creator-developer/ContinuumAI.git
 cd ContinuumAI
 
-# 2. Install dependencies & run test suite
+# 2. Install dependencies & run test suite (21/21 Pass)
 pip install -r requirements.txt
-python -m pytest test_engine.py
+python -m pytest test_engine.py test_regression.py
 
 # 3. Launch the operational server
 python app.py
@@ -92,14 +101,19 @@ In accordance with Round 2 guidelines, we commit to three meaningful, non-cosmet
 
 ```
 ContinuumAI/
-├── app.py                                            # Main FastAPI Server & Web App
+├── app.py                                            # Main FastAPI Gateway & Dashboard Server
+├── main.py                                           # ASGI Server Entrypoint for Vercel
 ├── run.bat                                           # 1-Click Windows Local Launcher
 ├── run.sh                                            # 1-Click Unix Local Launcher
 ├── requirements.txt                                  # Python Dependencies
-├── test_engine.py                                    # Automated Pytest Suite (7/7 Passing)
-├── vercel.json                                       # Serverless Cloud Deployment Config
-├── ContinuumAI_Knowledge_Handover_Round2_Build_Dossier.pdf # Official Round 2 PDF Dossier
-├── ContinuumAI_Knowledge_Handover_Round1_Dossier.pdf # Round 1 Proposal Reference
+├── test_engine.py                                    # Unit Test Suite (7/7 Passing)
+├── test_regression.py                                # Exhaustive Regression Test Suite (14/14 Passing)
+├── vercel.json                                       # Multi-Service Cloud Deployment Config
+├── ContinuumAI_Knowledge_Handover_Round2_Build_Dossier.pdf # Official Round 2 PDF Dossier (8 Slides)
+├── ContinuumAI_Knowledge_Handover_Round1_Dossier.pdf # Round 1 Proposal Reference (8 Slides)
+├── server/                                           # Dedicated Backend Engine Microservice
+│   ├── main.py                                       # Backend Service Entrypoint
+│   └── requirements.txt                              # Lean Microservice Dependencies
 ├── core/
 │   ├── sanitizer.py                                  # Presidio PII & Secret Redactor
 │   ├── engine.py                                     # Temporal AST & Causal Graph Builder
