@@ -5,6 +5,7 @@ Exposes all analytical, reconstruction, verification, and audit endpoints.
 
 import os
 import sys
+import hashlib
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -149,6 +150,69 @@ def ask_handover_assistant_endpoint(req: AskQueryRequest):
     tre_data = tre.verify_and_reconcile(raw, state)
     ledger_state = ledger.get_review_state()
     return assistant.answer_query(req.query, state, tre_data, ledger_state)
+
+@app.get("/api/verify_cert/{cert_hash}")
+def verify_cert_endpoint(cert_hash: str):
+    return ledger.verify_certificate(cert_hash)
+
+@app.get("/api/export/{fmt}")
+def export_handover_endpoint(fmt: str = "markdown"):
+    raw = engine.load_raw_sources()
+    state = engine.reconstruct_project_state(raw)
+    tre_data = tre.verify_and_reconcile(raw, state)
+    review_state = ledger.get_review_state()
+
+    if fmt.lower() == "json":
+        return {
+            "platform": "ContinuumAI Handover OS",
+            "version": "2.0.0 Enterprise",
+            "state": state,
+            "verification": tre_data,
+            "audit_ledger": review_state
+        }
+
+    md = []
+    md.append("# 🚀 Project Handover & Continuity Briefing")
+    md.append("*Generated automatically by ContinuumAI — Enterprise Handover Platform*\n")
+    md.append("## 1. Executive Summary")
+    md.append(f"- **Total Timeline Milestones:** {len(state.get('timeline', []))}")
+    md.append(f"- **Architectural Decisions (ADRs):** {len(state.get('architecture_decisions', []))}")
+    md.append(f"- **Active Blockers:** {len(state.get('active_blockers', []))}")
+    md.append(f"- **Grounded Claim Veracity Ratio:** {tre_data.get('grounded_claim_ratio', 1.0) * 100}%\n")
+
+    md.append("## 2. First 30 Days Actionable Continuity Checklist")
+    role_info = rbac.get_role_handover("engineering", state, tre_data)
+    for task in role_info.get("first_30_days_tasks", []):
+        md.append(f"- **[{task.get('day')}]**: {task.get('task')}")
+    md.append("")
+
+    md.append("## 3. Architecture Decision Records (ADRs)")
+    for adr in state.get("architecture_decisions", []):
+        md.append(f"### {adr.get('title')} ({adr.get('status')})")
+        md.append(f"- **Rationale:** {adr.get('decision')}")
+        md.append(f"- **Evidence Pin:** `{adr.get('citation')}`\n")
+
+    md.append("## 4. Active Technical Blockers & Missing Parameters")
+    for b in state.get("active_blockers", []):
+        md.append(f"- **[{b.get('key')}] {b.get('summary')}** (Assignee: {b.get('assignee')})")
+        md.append(f"  - Context: {b.get('notes')}")
+    md.append("")
+
+    md.append("## 5. Cryptographic Signoff & Compliance Seal")
+    sigs = review_state.get("signatures", [])
+    if sigs:
+        sig = sigs[-1]
+        md.append(f"- **Signer:** {sig.get('signer_name')} ({sig.get('signer_role')})")
+        md.append(f"- **Timestamp:** {sig.get('timestamp')}")
+        md.append(f"- **Certificate SHA-256:** `{sig.get('certificate_hash')}`")
+        md.append(f"- **Ledger Block:** `{sig.get('audit_ledger_block')}`")
+    else:
+        md.append("- *Status: Ready for two-party cryptographic signoff in Step 4.*")
+
+    return {
+        "format": "markdown",
+        "content": "\\n".join(md)
+    }
 
 if __name__ == "__main__":
     import uvicorn

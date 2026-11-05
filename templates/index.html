@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ContinuumAI — Intelligent Knowledge Handover Engine (Round 2)</title>
+    <title>ContinuumAI — Enterprise Knowledge Handover & Continuity Platform</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts -->
@@ -21,13 +21,13 @@
             0%, 100% { transform: translateX(0); }
             50% { transform: translateX(8px); }
         }
-        .animate-bounce-x { animation: bounce-x 1s infinite; }
+        .animate-bounce-x { animation: bounce-x 1.2s infinite; }
 
         @keyframes pulse-subtle {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.85; transform: scale(1.02); }
         }
-        .animate-pulse-subtle { animation: pulse-subtle 1.8s infinite; }
+        .animate-pulse-subtle { animation: pulse-subtle 2s infinite; }
 
         /* Custom scrollbar */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -36,36 +36,36 @@
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col antialiased relative">
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col antialiased relative selection:bg-blue-600 selection:text-white">
 
     <!-- FLOATING INTERACTIVE GUIDE / BEGINNER'S WALKTHROUGH BANNER (TOGGLEABLE) -->
-    <div id="tour-guide-container" class="sticky top-0 z-50 bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 text-white shadow-2xl border-b-2 border-blue-400 transition-all duration-300">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col sm:flex-row items-center justify-between gap-3">
+    <div id="tour-guide-container" class="sticky top-0 z-50 bg-gradient-to-r from-blue-950 via-slate-900 to-indigo-950 text-white shadow-2xl border-b border-blue-500/30 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex flex-col sm:flex-row items-center justify-between gap-3">
             <div class="flex items-center gap-3">
-                <span class="w-8 h-8 rounded-full bg-blue-500/30 border border-blue-400 flex items-center justify-center text-blue-200 font-bold text-sm">
+                <span class="w-7 h-7 rounded-full bg-blue-500/20 border border-blue-400 flex items-center justify-center text-blue-300 font-mono font-bold text-xs">
                     <span id="tour-step-badge">1/5</span>
                 </span>
                 <div>
                     <div class="flex items-center gap-2">
-                        <span class="font-heading font-bold text-sm tracking-wide text-blue-200 uppercase">Beginner's Guided Tour</span>
-                        <span id="tour-step-title" class="px-2 py-0.5 rounded bg-blue-500/20 text-xs font-mono font-bold text-blue-300 border border-blue-400/40">Step 1: Connect & Clean</span>
+                        <span class="font-heading font-bold text-xs tracking-wider text-blue-300 uppercase">Interactive Walkthrough</span>
+                        <span id="tour-step-title" class="px-2 py-0.5 rounded bg-blue-500/20 text-xs font-mono font-bold text-blue-200 border border-blue-400/40">Step 1: Connect & Clean</span>
                     </div>
-                    <p id="tour-step-desc" class="text-xs text-slate-200 mt-0.5">
-                        Start here! Ingest raw Git, PRs, Slack, and Jira activity. Notice how Zero-Trust Presidio redaction sanitizes API keys and personal data.
+                    <p id="tour-step-desc" class="text-xs text-slate-300 mt-0.5 max-w-2xl">
+                        Ingests raw Git, PRs, Slack, and Jira activity. Notice how Zero-Trust Presidio redaction sanitizes API keys and personal data prior to knowledge modeling.
                     </p>
                 </div>
             </div>
 
             <!-- Tour Controls -->
             <div class="flex items-center gap-2">
-                <button onclick="prevTourStep()" id="btn-tour-prev" class="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-semibold text-slate-200 transition-colors border border-white/20 disabled:opacity-40">
+                <button onclick="prevTourStep()" id="btn-tour-prev" class="px-2.5 py-1 rounded bg-white/10 hover:bg-white/20 text-xs font-semibold text-slate-200 transition-colors border border-white/20 disabled:opacity-40">
                     &larr; Prev
                 </button>
-                <button onclick="nextTourStep()" id="btn-tour-next" class="px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white shadow-sm transition-all flex items-center gap-1">
-                    <span>Next Step</span>
+                <button onclick="nextTourStep()" id="btn-tour-next" class="px-3.5 py-1 rounded bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white shadow-xs transition-all flex items-center gap-1">
+                    <span>Next</span>
                     <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
                 </button>
-                <button onclick="toggleTourGuide(false)" class="p-1.5 rounded-lg hover:bg-white/10 text-slate-400 hover:text-white transition-colors" title="Close Guide">
+                <button onclick="toggleTourGuide(false)" class="p-1 rounded hover:bg-white/10 text-slate-400 hover:text-white transition-colors" title="Close Guide">
                     <i data-lucide="x" class="w-4 h-4"></i>
                 </button>
             </div>
@@ -78,61 +78,143 @@
         <span id="tour-pointer-text">Start Here: Step 1</span>
     </div>
 
-    <!-- Top Header -->
-    <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
+    <!-- Enterprise Top Navigation Bar -->
+    <header class="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center text-white font-heading font-extrabold text-xl shadow-md shadow-blue-500/20">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-700 via-blue-600 to-indigo-600 flex items-center justify-center text-white font-heading font-extrabold text-xl shadow-md shadow-blue-500/25">
                     C
                 </div>
                 <div>
                     <div class="flex items-center gap-2">
                         <span class="font-heading font-extrabold text-xl tracking-tight text-slate-900">Continuum<span class="text-blue-600">AI</span></span>
-                        <span class="font-mono text-xs px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 font-bold border border-blue-200">v2.0.0 BUILD</span>
+                        <span class="font-mono text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-bold border border-slate-300">ENTERPRISE OS</span>
                     </div>
-                    <p class="text-xs text-slate-500 font-medium">Autonomous Project State Reconstruction & Handover Platform</p>
+                    <p class="text-[11px] text-slate-500 font-medium">Autonomous Engineering Knowledge Continuity & Handover Platform</p>
                 </div>
             </div>
 
+            <!-- Header Quick Action Navigation -->
             <div class="flex items-center gap-2 sm:gap-3">
-                <!-- Interactive Guide Launcher Button -->
-                <button onclick="toggleTourGuide(true)" class="px-3 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-xs border border-indigo-200 flex items-center gap-1.5 transition-all shadow-xs">
-                    <i data-lucide="compass" class="w-4 h-4 text-indigo-600"></i>
-                    <span class="hidden sm:inline">Beginner's Guide</span>
+                <button onclick="openCustomIngestModal()" class="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-slate-700 hover:text-blue-700 hover:bg-slate-100 transition-all border border-slate-200">
+                    <i data-lucide="upload-cloud" class="w-4 h-4 text-blue-600"></i>
+                    <span>Ingest Data</span>
                 </button>
 
-                <span class="font-mono text-xs px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 font-semibold border border-emerald-200 flex items-center gap-1.5">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span class="hidden md:inline">ROUND 2</span> OPERATIONAL
-                </span>
-                <span class="font-mono text-xs px-3 py-1 rounded-md bg-purple-50 text-purple-700 font-bold border border-purple-200 hidden sm:inline">
-                    TEAM: VALERION CODERS
-                </span>
+                <button onclick="openCertVerifyModal()" class="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-slate-700 hover:text-emerald-700 hover:bg-slate-100 transition-all border border-slate-200">
+                    <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600"></i>
+                    <span>Verify Audit Seal</span>
+                </button>
+
+                <button onclick="openRoiModal()" class="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-slate-700 hover:text-amber-700 hover:bg-slate-100 transition-all border border-slate-200">
+                    <i data-lucide="calculator" class="w-4 h-4 text-amber-600"></i>
+                    <span>ROI Calculator</span>
+                </button>
+
+                <button onclick="exportHandoverMarkdown()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-50 text-blue-700 hover:bg-blue-100 transition-all border border-blue-200">
+                    <i data-lucide="download" class="w-4 h-4 text-blue-600"></i>
+                    <span class="hidden sm:inline">Export Briefing</span>
+                </button>
+
+                <button onclick="toggleTourGuide(true)" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-xs transition-all">
+                    <i data-lucide="compass" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">Guide Tour</span>
+                </button>
             </div>
         </div>
     </header>
 
-    <!-- Main Container -->
+    <!-- Main Content Container -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full flex flex-col gap-6">
 
-        <!-- Banner Card -->
-        <div class="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 rounded-xl p-6 text-white shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-                <span class="font-mono text-xs text-blue-300 font-bold uppercase tracking-wider">HACKATHON CHALLENGE BRIEF — ROUND 2 THE BUILD</span>
-                <h1 class="font-heading text-2xl font-bold mt-1">Prevent Critical Knowledge From Leaving With People</h1>
-                <p class="text-slate-300 text-sm max-w-2xl mt-1 leading-relaxed">
-                    ContinuumAI automatically reconstructs scattered digital exhaust into a verifiable, role-appropriate, and actionable continuation roadmap backed by line-level citations and two-party cryptographic signoff.
-                </p>
+        <!-- Enterprise Hero Banner -->
+        <div class="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 rounded-2xl p-7 text-white shadow-xl border border-slate-800">
+            <!-- Glow background effect -->
+            <div class="absolute -right-20 -top-20 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
+            
+            <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                <div class="max-w-3xl">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 font-bold border border-blue-400/30 uppercase tracking-wider">
+                            AUTONOMOUS KNOWLEDGE CONTINUITY
+                        </span>
+                        <span class="font-mono text-[11px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold border border-emerald-400/30 flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                            Production Ready
+                        </span>
+                    </div>
+                    <h1 class="font-heading text-2xl sm:text-3xl font-extrabold tracking-tight text-white leading-tight">
+                        Never Lose Institutional Memory When Key Engineers Depart.
+                    </h1>
+                    <p class="text-slate-300 text-sm mt-2 leading-relaxed max-w-2xl">
+                        ContinuumAI autonomously ingests multi-source digital exhaust (Git commits, PR discussions, Slack channels, Jira tickets), redacts credentials, resolves architectural contradictions, and compiles verifiable continuation roadmaps.
+                    </p>
+                </div>
+
+                <!-- Live Quick Metrics Box -->
+                <div class="flex flex-col sm:flex-row lg:flex-col gap-3 flex-shrink-0">
+                    <div class="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-3.5 flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-lg bg-blue-500/20 flex items-center justify-center text-blue-400">
+                            <i data-lucide="shield-check" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <div class="font-mono text-[11px] text-slate-400 uppercase font-semibold">Zero-Trust Sanitization</div>
+                            <div class="font-heading text-sm font-bold text-white">Presidio Engine Active</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-3.5 flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400">
+                            <i data-lucide="git-merge" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <div class="font-mono text-[11px] text-slate-400 uppercase font-semibold">Temporal Reconciliation</div>
+                            <div class="font-heading text-sm font-bold text-white">Deterministic State Trees</div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="flex flex-row md:flex-col items-center md:items-end gap-2 text-right">
-                <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg px-4 py-2">
-                    <div class="font-mono text-xs text-blue-200">Active Testbed Dataset</div>
-                    <div class="font-heading font-bold text-base text-white">6-Month Enterprise Corpus</div>
+
+            <!-- Feature Pills Row -->
+            <div class="relative z-10 grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 pt-5 border-t border-slate-800 text-xs font-medium text-slate-300">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="check" class="w-4 h-4 text-emerald-400"></i>
+                    <span>75% Faster Successor Ramp-Up</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i data-lucide="check" class="w-4 h-4 text-emerald-400"></i>
+                    <span>100% Traceable Evidence Pins</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i data-lucide="check" class="w-4 h-4 text-emerald-400"></i>
+                    <span>Zero Secret & PII Leakage</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i data-lucide="check" class="w-4 h-4 text-emerald-400"></i>
+                    <span>SOC 2 Cryptographic SHA-256 Seal</span>
                 </div>
             </div>
         </div>
 
-        <!-- 5-Step Navigation Tabs -->
+        <!-- 5-Step Operational Handover Studio Navigation Bar -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+                <h2 class="font-heading font-bold text-lg text-slate-900">Operational Handover Studio</h2>
+                <p class="text-xs text-slate-500">Step through the 5-stage lifecycle from raw telemetry to certified continuation briefing</p>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <span class="text-xs text-slate-500 font-mono">Active Profile:</span>
+                <span class="px-2.5 py-1 rounded bg-blue-100 text-blue-800 font-mono text-xs font-bold" id="active-profile-label">
+                    Enterprise Healthcare (Standard)
+                </span>
+                <button onclick="openCustomIngestModal()" class="text-xs text-blue-600 hover:text-blue-800 font-bold underline">
+                    Switch / Upload
+                </button>
+            </div>
+        </div>
+
+        <!-- 5-Step Stepper Tabs -->
         <nav id="step-nav-bar" class="grid grid-cols-2 sm:grid-cols-5 gap-2 bg-slate-200/70 p-1.5 rounded-xl border border-slate-300">
             <button onclick="switchTab('tab-connect')" id="btn-tab-connect" class="step-tab flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-xs font-bold transition-all bg-white text-blue-700 shadow-sm">
                 <span class="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center font-mono text-[11px]">1</span>
@@ -161,59 +243,68 @@
         <!-- ================================================================= -->
         <div id="tab-connect" class="tab-panel flex flex-col gap-6">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="target-ingest-cards">
-                <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm hover:border-blue-400 transition-all cursor-pointer" onclick="openInspectorModal('commits')">
+                <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm hover:border-blue-400 hover:shadow-md transition-all cursor-pointer" onclick="openInspectorModal('commits')">
                     <div class="flex items-center justify-between">
                         <span class="text-xs font-mono text-slate-500 uppercase">Git Commits</span>
                         <i data-lucide="git-commit" class="w-5 h-5 text-blue-600"></i>
                     </div>
-                    <div class="font-heading font-extrabold text-3xl text-slate-900 mt-2 counter-val" data-target="45">45</div>
-                    <span class="text-xs text-slate-500">Feature branches, hotfixes, diffs &bull; <strong class="text-blue-600">Click to inspect</strong></span>
+                    <div class="font-heading font-extrabold text-3xl text-slate-900 mt-2" id="metric-commits-count">{{ raw_counts.commits if raw_counts else 45 }}</div>
+                    <span class="text-xs text-slate-500">Feature branches, hotfixes, diffs &bull; <strong class="text-blue-600">Inspect &rarr;</strong></span>
                 </div>
-                <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm hover:border-purple-400 transition-all cursor-pointer" onclick="openInspectorModal('prs')">
+                <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm hover:border-purple-400 hover:shadow-md transition-all cursor-pointer" onclick="openInspectorModal('prs')">
                     <div class="flex items-center justify-between">
                         <span class="text-xs font-mono text-slate-500 uppercase">Pull Requests</span>
                         <i data-lucide="git-pull-request" class="w-5 h-5 text-purple-600"></i>
                     </div>
-                    <div class="font-heading font-extrabold text-3xl text-slate-900 mt-2 counter-val" data-target="20">20</div>
-                    <span class="text-xs text-slate-500">Architectural reviews & debates &bull; <strong class="text-purple-600">Click to inspect</strong></span>
+                    <div class="font-heading font-extrabold text-3xl text-slate-900 mt-2" id="metric-prs-count">{{ raw_counts.prs if raw_counts else 20 }}</div>
+                    <span class="text-xs text-slate-500">Architectural reviews & debates &bull; <strong class="text-purple-600">Inspect &rarr;</strong></span>
                 </div>
-                <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm hover:border-amber-400 transition-all cursor-pointer" onclick="openInspectorModal('slack')">
+                <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm hover:border-amber-400 hover:shadow-md transition-all cursor-pointer" onclick="openInspectorModal('slack')">
                     <div class="flex items-center justify-between">
                         <span class="text-xs font-mono text-slate-500 uppercase">Slack Messages</span>
                         <i data-lucide="message-square" class="w-5 h-5 text-amber-600"></i>
                     </div>
-                    <div class="font-heading font-extrabold text-3xl text-slate-900 mt-2 counter-val" data-target="80">80</div>
-                    <span class="text-xs text-slate-500">War rooms, design discussions &bull; <strong class="text-amber-600">Click to inspect</strong></span>
+                    <div class="font-heading font-extrabold text-3xl text-slate-900 mt-2" id="metric-slack-count">{{ raw_counts.slack if raw_counts else 80 }}</div>
+                    <span class="text-xs text-slate-500">War rooms, design discussions &bull; <strong class="text-amber-600">Inspect &rarr;</strong></span>
                 </div>
-                <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm hover:border-emerald-400 transition-all cursor-pointer" onclick="openInspectorModal('sanitizer')">
+                <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm hover:border-emerald-400 hover:shadow-md transition-all cursor-pointer" onclick="openInspectorModal('sanitizer')">
                     <div class="flex items-center justify-between">
                         <span class="text-xs font-mono text-slate-500 uppercase">Presidio Redactions</span>
                         <i data-lucide="shield-check" class="w-5 h-5 text-emerald-600"></i>
                     </div>
                     <div class="font-heading font-extrabold text-3xl text-emerald-600 mt-2">100%</div>
-                    <span class="text-xs text-slate-500">Stripe keys, tokens, PII masked &bull; <strong class="text-emerald-600">View diff</strong></span>
+                    <span class="text-xs text-slate-500">Stripe keys, tokens, PII masked &bull; <strong class="text-emerald-600">View log &rarr;</strong></span>
                 </div>
             </div>
 
             <!-- Zero Trust Security Details -->
             <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-                <div class="flex items-center justify-between mb-4 border-b pb-3">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 border-b pb-3 gap-2">
                     <div class="flex items-center gap-2">
                         <i data-lucide="shield-alert" class="w-5 h-5 text-blue-600"></i>
-                        <h2 class="font-heading font-bold text-base text-slate-900">Zero-Trust Ingestion & Automated Secret Sanitization</h2>
+                        <h2 class="font-heading font-bold text-base text-slate-900">Zero-Trust Telemetry Ingestion & PII Redaction Pipeline</h2>
                     </div>
-                    <span class="text-xs font-mono bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded border border-emerald-200 font-bold">
-                        PRESIDIO REDACTOR ACTIVE
-                    </span>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-mono bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded border border-emerald-200 font-bold">
+                            MICROSOFT PRESIDIO ACTIVE
+                        </span>
+                        <button onclick="openCustomIngestModal()" class="px-3 py-1 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-lg transition-colors flex items-center gap-1">
+                            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                            <span>Upload Custom Data</span>
+                        </button>
+                    </div>
                 </div>
                 <p class="text-sm text-slate-600 leading-relaxed mb-4">
-                    Before any raw digital exhaust is indexed into the knowledge graph or sent to LLM prompt contexts, it passes through our deterministic regex and Microsoft Presidio redaction pipeline. Live Stripe API secrets, AWS tokens, customer emails, and executive compensation figures are permanently masked.
+                    Before any raw digital exhaust is ingested into the knowledge graph or sent to LLM prompt contexts, it passes through our deterministic regex and Microsoft Presidio redaction pipeline. Live Stripe API secrets, AWS tokens, customer emails, and executive compensation figures are permanently masked.
                 </p>
-                <div class="bg-slate-900 rounded-lg p-4 font-mono text-xs text-slate-300 overflow-x-auto space-y-2">
-                    <div class="text-emerald-400 font-bold">// Sample Live Interception & Scrubbing:</div>
-                    <div><span class="text-slate-500">Original:</span> "Stripe live secret key is sk_mock_stripe_key_999988887777"</div>
+                <div class="bg-slate-900 rounded-xl p-4 font-mono text-xs text-slate-300 overflow-x-auto space-y-2 border border-slate-800">
+                    <div class="text-emerald-400 font-bold flex items-center gap-2">
+                        <i data-lucide="check-circle" class="w-4 h-4"></i>
+                        <span>Live Interception & Scrubbing Audit Log:</span>
+                    </div>
+                    <div><span class="text-slate-500">Incoming:</span> "Stripe live secret key is sk_mock_stripe_key_999988887777"</div>
                     <div><span class="text-blue-400">Sanitized:</span> "Stripe live secret key is <span class="text-amber-300 font-bold">[REDACTED_STRIPE_SECRET_KEY]</span>"</div>
-                    <div class="mt-2"><span class="text-slate-500">Original:</span> "Alex's replacement salary bracket is approved between $140k-$165k"</div>
+                    <div class="mt-2"><span class="text-slate-500">Incoming:</span> "Alex's replacement salary bracket is approved between $140k-$165k"</div>
                     <div><span class="text-blue-400">Sanitized:</span> "Alex's replacement salary bracket is approved between <span class="text-amber-300 font-bold">[REDACTED_FINANCIAL_FIGURE]</span>"</div>
                 </div>
             </div>
@@ -232,11 +323,11 @@
                                 <i data-lucide="git-merge" class="w-5 h-5 text-indigo-600"></i>
                                 Implicit Architectural Decision Records (ADRs) Extracted
                             </h2>
-                            <span class="text-xs font-mono bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded font-bold">RECONSTRUCTED</span>
+                            <span class="text-xs font-mono bg-indigo-50 text-indigo-700 px-2.5 py-0.5 rounded font-bold border border-indigo-200">RECONSTRUCTED</span>
                         </div>
                         <div class="space-y-3">
                             {% for adr in state.architecture_decisions %}
-                            <div class="p-4 rounded-lg bg-slate-50 border border-slate-200 hover:border-blue-300 transition-colors">
+                            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 hover:border-blue-300 transition-colors">
                                 <div class="flex items-center justify-between">
                                     <span class="font-heading font-bold text-sm text-slate-900">{{ adr.title }}</span>
                                     <span class="text-xs font-mono bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-semibold">{{ adr.status }}</span>
@@ -294,7 +385,7 @@
                         <p class="text-xs text-slate-500 mb-3">Neo4j/NetworkX directional relationships between Jira issues and Git commit resolutions.</p>
                         <div class="space-y-2">
                             {% for edge in state.graph_edges %}
-                            <div class="p-2.5 rounded bg-purple-50/60 border border-purple-200 text-xs font-mono text-slate-700 flex items-center justify-between">
+                            <div class="p-2.5 rounded-lg bg-purple-50/60 border border-purple-200 text-xs font-mono text-slate-700 flex items-center justify-between">
                                 <span>{{ edge.from }}</span>
                                 <span class="text-purple-600 font-bold">&rarr; {{ edge.relation }} &rarr;</span>
                                 <span class="font-bold text-slate-900">{{ edge.to }}</span>
@@ -415,13 +506,13 @@
                 </h2>
                 <div class="space-y-3">
                     {% for claim in tre.verified_claims %}
-                    <div class="p-4 rounded-lg bg-slate-50 border border-slate-200">
+                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
                         <div class="flex items-center justify-between">
                             <span class="font-heading font-bold text-sm text-slate-900">{{ claim.topic }}</span>
                             <span class="text-xs font-mono bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded font-bold">Confidence: {{ (claim.confidence * 100) | round(1) }}%</span>
                         </div>
                         <p class="text-xs text-slate-700 mt-1.5 leading-relaxed">{{ claim.statement }}</p>
-                        <div class="mt-2 text-xs font-mono text-blue-600 bg-blue-50/70 p-2 rounded border border-blue-100 flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                        <div class="mt-2 text-xs font-mono text-blue-600 bg-blue-50/70 p-2 rounded-lg border border-blue-100 flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                             <span>Citation Pin: {{ claim.citation }}</span>
                             <span class="text-slate-500 font-normal">Evidence: {{ claim.evidence_text }}</span>
                         </div>
@@ -502,7 +593,7 @@
                             Sign & Issue Handover Certificate
                         </button>
 
-                        <div id="signoff-certificate-box" class="mt-4 p-4 rounded-lg bg-emerald-50 border border-emerald-200 text-xs font-mono text-emerald-900 hidden">
+                        <div id="signoff-certificate-box" class="mt-4 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-xs font-mono text-emerald-900 hidden">
                             <div class="font-bold flex items-center justify-between text-emerald-800">
                                 <span class="flex items-center gap-1.5">
                                     <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600"></i>
@@ -548,19 +639,19 @@
                             <div class="border-t pt-3">
                                 <h3 class="font-heading font-bold text-xs text-slate-900 uppercase tracking-wider mb-2">First 30 Days Actionable Priority Checklist</h3>
                                 <div class="space-y-2" id="first-30-days-list">
-                                    <div class="p-2.5 rounded bg-slate-50 border border-slate-200 text-xs flex items-center justify-between">
+                                    <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-xs flex items-center justify-between">
                                         <span class="font-bold text-blue-700 font-mono">Day 1-3</span>
                                         <span class="text-slate-800">Clone repository and verify local environment with Docker Compose</span>
                                     </div>
-                                    <div class="p-2.5 rounded bg-slate-50 border border-slate-200 text-xs flex items-center justify-between">
+                                    <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-xs flex items-center justify-between">
                                         <span class="font-bold text-blue-700 font-mono">Day 4-7</span>
                                         <span class="text-slate-800">Inspect src/auth/jwt.py and rotating HMAC keys (ADR-002)</span>
                                     </div>
-                                    <div class="p-2.5 rounded bg-slate-50 border border-slate-200 text-xs flex items-center justify-between">
+                                    <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-xs flex items-center justify-between">
                                         <span class="font-bold text-blue-700 font-mono">Day 8-14</span>
                                         <span class="text-slate-800">Resolve Jira OPS-412: Automate X_INTERNAL_SYNC_SALT in CI/CD</span>
                                     </div>
-                                    <div class="p-2.5 rounded bg-slate-50 border border-slate-200 text-xs flex items-center justify-between">
+                                    <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-xs flex items-center justify-between">
                                         <span class="font-bold text-blue-700 font-mono">Day 15-30</span>
                                         <span class="text-slate-800">Review Redis Cluster connection pool performance under load</span>
                                     </div>
@@ -576,7 +667,7 @@
                         <div>
                             <div class="flex items-center justify-between border-b pb-3 mb-3">
                                 <div class="flex items-center gap-2">
-                                    <div class="w-7 h-7 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold">
+                                    <div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-indigo-600 to-blue-600 flex items-center justify-center text-white font-bold shadow-xs">
                                         <i data-lucide="bot" class="w-4 h-4"></i>
                                     </div>
                                     <div>
@@ -605,14 +696,14 @@
                             </div>
 
                             <!-- Multi-Turn Chat Conversation Window -->
-                            <div id="chat-stream-window" class="p-3 rounded-lg bg-slate-50 border border-slate-200 text-xs min-h-[220px] max-h-[290px] overflow-y-auto space-y-3">
+                            <div id="chat-stream-window" class="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs min-h-[220px] max-h-[290px] overflow-y-auto space-y-3">
                                 <!-- Initial Greeting Bubble -->
                                 <div class="flex gap-2.5 items-start">
                                     <div class="w-6 h-6 rounded-full bg-indigo-600 flex-shrink-0 flex items-center justify-center text-white text-[10px] font-bold">
                                         AI
                                     </div>
                                     <div class="bg-white border border-slate-200 rounded-lg p-2.5 shadow-2xs max-w-[90%] text-slate-700 leading-relaxed">
-                                        Hello! I am your <strong>ContinuumAI Handover Assistant</strong>. I have analyzed 45 commits, 20 PRs, 80 Slack messages, and 15 Jira tickets.
+                                        Hello! I am your <strong>ContinuumAI Handover Assistant</strong>. I have indexed 45 commits, 20 PRs, 80 Slack messages, and 15 Jira tickets.
                                         <div class="text-[11px] text-slate-500 mt-1">
                                             Ask me anything about architecture decisions, unmerged branches, blockers, or credentials.
                                         </div>
@@ -630,7 +721,7 @@
                         <!-- Chat Input Bar -->
                         <div class="mt-3 flex gap-2">
                             <input id="ask-input" type="text" placeholder="Ask about architecture, blockers, secrets..." class="flex-1 border border-slate-300 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium" onkeydown="if(event.key==='Enter') submitAskQuery()">
-                            <button onclick="submitAskQuery()" id="btn-submit-ask" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-lg transition-colors flex items-center gap-1">
+                            <button onclick="submitAskQuery()" id="btn-submit-ask" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-lg transition-colors flex items-center gap-1 shadow-xs">
                                 <span>Ask</span>
                                 <i data-lucide="send" class="w-3.5 h-3.5"></i>
                             </button>
@@ -642,9 +733,161 @@
 
     </main>
 
-    <!-- Source Citation Modal (Inspector) -->
+    <!-- ===================================================================== -->
+    <!-- MODAL 1: CUSTOM DATA INGESTION -->
+    <!-- ===================================================================== -->
+    <div id="custom-ingest-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl border border-slate-200">
+            <div class="flex items-center justify-between border-b pb-3 mb-4">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="upload-cloud" class="w-5 h-5 text-blue-600"></i>
+                    <h3 class="font-heading font-bold text-base text-slate-900">Ingest Custom Telemetry / Choose Dataset</h3>
+                </div>
+                <button onclick="closeCustomIngestModal()" class="text-slate-400 hover:text-slate-700">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Profile Presets Selection -->
+            <div class="mb-4">
+                <label class="text-xs font-bold text-slate-700 uppercase tracking-wider block mb-2">Preset Workspaces:</label>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                    <button onclick="loadPresetProfile('healthcare')" class="p-2.5 rounded-lg border border-blue-400 bg-blue-50 text-blue-900 text-left hover:bg-blue-100 font-medium">
+                        <div class="font-bold">1. Healthcare Core</div>
+                        <div class="text-[10px] text-slate-600">ADR-002, Redis vs Memcached (Active)</div>
+                    </button>
+                    <button onclick="loadPresetProfile('fintech')" class="p-2.5 rounded-lg border border-slate-200 hover:border-slate-300 text-left hover:bg-slate-50 font-medium">
+                        <div class="font-bold">2. Fintech Gateway</div>
+                        <div class="text-[10px] text-slate-600">Plaid API, Stripe Webhooks, KYC</div>
+                    </button>
+                    <button onclick="loadPresetProfile('ai_agent')" class="p-2.5 rounded-lg border border-slate-200 hover:border-slate-300 text-left hover:bg-slate-50 font-medium">
+                        <div class="font-bold">3. AI Agent System</div>
+                        <div class="text-[10px] text-slate-600">LangGraph, ChromaDB, RAG Spikes</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Custom Input Textareas -->
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="font-bold text-slate-700 block mb-1">Paste Git Commit Messages (One per line):</label>
+                    <textarea id="custom-commits-input" rows="3" placeholder="feat(auth): add rotating HMAC session keys&#10;fix(db): migrate connection pooling to Redis cluster" class="w-full border border-slate-300 rounded-lg p-2.5 font-mono text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none"></textarea>
+                </div>
+                <div>
+                    <label class="font-bold text-slate-700 block mb-1">Paste Slack Design Chats (Simulate debates):</label>
+                    <textarea id="custom-slack-input" rows="2" placeholder="Alex: Should we deprecate Memcached for Redis cluster?&#10;Prince: Yes, merged in PR #42 with distributed locks." class="w-full border border-slate-300 rounded-lg p-2.5 font-mono text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none"></textarea>
+                </div>
+            </div>
+
+            <div class="mt-5 flex items-center justify-between border-t pt-4">
+                <span class="text-[11px] text-slate-500 font-mono">Zero-Trust Presidio auto-redaction will apply.</span>
+                <div class="flex gap-2">
+                    <button onclick="closeCustomIngestModal()" class="px-3.5 py-2 text-xs font-bold text-slate-600 hover:text-slate-900">Cancel</button>
+                    <button onclick="submitCustomIngestion()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-lg transition-colors flex items-center gap-1.5 shadow-sm">
+                        <i data-lucide="play" class="w-3.5 h-3.5"></i>
+                        <span>Reconstruct State</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- MODAL 2: CRYPTOGRAPHIC CERTIFICATE VERIFIER -->
+    <!-- ===================================================================== -->
+    <div id="cert-verify-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-xl w-full p-6 shadow-2xl border border-slate-200">
+            <div class="flex items-center justify-between border-b pb-3 mb-4">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="shield-check" class="w-5 h-5 text-emerald-600"></i>
+                    <h3 class="font-heading font-bold text-base text-slate-900">SOC 2 / ISO 27001 Cryptographic Verifier</h3>
+                </div>
+                <button onclick="closeCertVerifyModal()" class="text-slate-400 hover:text-slate-700">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <p class="text-xs text-slate-600 mb-4 leading-relaxed">
+                Enter any 64-character SHA-256 certificate hash generated by ContinuumAI to verify its tamper-evident audit ledger block.
+            </p>
+
+            <div class="flex gap-2 mb-4">
+                <input id="verify-hash-input" type="text" placeholder="Paste 64-character SHA-256 hash..." class="flex-1 border border-slate-300 rounded-lg px-3 py-2 font-mono text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                <button onclick="runVerifyCertCheck()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg transition-colors">
+                    Verify
+                </button>
+            </div>
+
+            <div id="verify-cert-result" class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs font-mono space-y-2">
+                <div class="text-slate-500">Awaiting certificate hash input...</div>
+            </div>
+
+            <div class="mt-4 flex justify-end">
+                <button onclick="closeCertVerifyModal()" class="px-4 py-2 bg-slate-900 text-white font-bold text-xs rounded-lg">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- MODAL 3: ROI CALCULATOR -->
+    <!-- ===================================================================== -->
+    <div id="roi-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200">
+            <div class="flex items-center justify-between border-b pb-3 mb-4">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="calculator" class="w-5 h-5 text-amber-600"></i>
+                    <h3 class="font-heading font-bold text-base text-slate-900">ContinuumAI Enterprise ROI Calculator</h3>
+                </div>
+                <button onclick="closeRoiModal()" class="text-slate-400 hover:text-slate-700">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4 text-xs">
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <label class="font-bold text-slate-700">Engineering Team Size:</label>
+                        <span id="roi-team-val" class="font-bold text-blue-600 font-mono">50 Engineers</span>
+                    </div>
+                    <input type="range" id="roi-team-slider" min="10" max="500" value="50" class="w-full" oninput="calculateROI()">
+                </div>
+
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <label class="font-bold text-slate-700">Annual Departures / Transitions:</label>
+                        <span id="roi-turnover-val" class="font-bold text-purple-600 font-mono">8 Developers/Year</span>
+                    </div>
+                    <input type="range" id="roi-turnover-slider" min="1" max="50" value="8" class="w-full" oninput="calculateROI()">
+                </div>
+
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <label class="font-bold text-slate-700">Average Senior Dev Hourly Cost:</label>
+                        <span id="roi-rate-val" class="font-bold text-emerald-600 font-mono">$85/hour</span>
+                    </div>
+                    <input type="range" id="roi-rate-slider" min="40" max="180" value="85" class="w-full" oninput="calculateROI()">
+                </div>
+
+                <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4 text-emerald-900">
+                    <div class="font-mono text-[11px] font-bold uppercase text-emerald-700">Estimated Annual Transition Savings:</div>
+                    <div class="font-heading font-extrabold text-3xl text-emerald-700 mt-1" id="roi-total-saved">$81,600 / yr</div>
+                    <p class="text-[11px] text-emerald-800 mt-1">
+                        Based on saving an average of <strong>3.0 weeks of lost ramp-up productivity</strong> per departing engineer (120 engineering hours saved).
+                    </p>
+                </div>
+            </div>
+
+            <div class="mt-5 flex justify-end">
+                <button onclick="closeRoiModal()" class="px-4 py-2 bg-slate-900 text-white font-bold text-xs rounded-lg">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- MODAL 4: EVIDENCE CITATION INSPECTOR -->
+    <!-- ===================================================================== -->
     <div id="inspector-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl max-w-2xl w-full p-6 shadow-2xl border border-slate-200">
+        <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl border border-slate-200">
             <div class="flex items-center justify-between border-b pb-3 mb-4">
                 <h3 class="font-heading font-bold text-base text-slate-900 flex items-center gap-2" id="modal-title">
                     <i data-lucide="file-text" class="w-5 h-5 text-blue-600"></i>
@@ -654,18 +897,58 @@
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
-            <div id="modal-content" class="text-xs text-slate-700 space-y-3 font-mono bg-slate-50 p-4 rounded-lg border border-slate-200 max-h-96 overflow-y-auto"></div>
+            <div id="modal-content" class="text-xs text-slate-700 space-y-3 font-mono bg-slate-50 p-4 rounded-xl border border-slate-200 max-h-96 overflow-y-auto"></div>
             <div class="mt-4 flex justify-end">
                 <button onclick="closeInspectorModal()" class="px-4 py-2 bg-slate-900 text-white font-bold text-xs rounded-lg">Close Inspector</button>
             </div>
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 py-4 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500 font-mono">
-            <div>CONTINUUMAI • VALERION CODERS (PRINCE KUMAR & YASH SHARMA)</div>
-            <div>ROUND 2: THE BUILD • 100% FUNCTIONAL END-TO-END</div>
+    <!-- ===================================================================== -->
+    <!-- MODAL 5: EXPORT BRIEFING MODAL -->
+    <!-- ===================================================================== -->
+    <div id="export-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-3xl w-full p-6 shadow-2xl border border-slate-200">
+            <div class="flex items-center justify-between border-b pb-3 mb-3">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="file-output" class="w-5 h-5 text-blue-600"></i>
+                    <h3 class="font-heading font-bold text-base text-slate-900">Export Complete Handover Package</h3>
+                </div>
+                <button onclick="closeExportModal()" class="text-slate-400 hover:text-slate-700">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <p class="text-xs text-slate-600 mb-3">
+                Ready to paste directly into Notion, Confluence, GitHub Wiki, or corporate offboarding archives.
+            </p>
+            <textarea id="export-markdown-content" rows="12" class="w-full bg-slate-900 text-slate-200 font-mono text-xs p-4 rounded-xl border border-slate-800 focus:outline-none" readonly></textarea>
+            
+            <div class="mt-4 flex items-center justify-between">
+                <span id="copy-success-badge" class="text-xs font-mono text-emerald-600 font-bold hidden">
+                    ✓ Copied to clipboard!
+                </span>
+                <div class="flex gap-2">
+                    <button onclick="downloadExportFile()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-lg flex items-center gap-1.5 transition-colors">
+                        <i data-lucide="file-down" class="w-4 h-4"></i>
+                        <span>Download .md</span>
+                    </button>
+                    <button onclick="copyExportMarkdown()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-lg flex items-center gap-1.5 transition-colors shadow-xs">
+                        <i data-lucide="copy" class="w-4 h-4"></i>
+                        <span>Copy Markdown</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enterprise Footer -->
+    <footer class="bg-white border-t border-slate-200 py-6 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 font-mono">
+            <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                <span>CONTINUUMAI PLATFORM &bull; VALERION CODERS (PRINCE KUMAR & YASH SHARMA)</span>
+            </div>
+            <div>VERIFIABLE CONTINUATION &bull; ZERO-TRUST ARCHITECTURE &bull; OPEN-SOURCE SAAS</div>
         </div>
     </footer>
 
@@ -750,7 +1033,6 @@
                 pointer.classList.remove('hidden');
                 document.getElementById('tour-pointer-text').innerText = step.pointerText;
                 
-                // Position above or alongside target element
                 const topPos = Math.max(80, rect.top + window.scrollY - 38);
                 const leftPos = Math.min(window.innerWidth - 260, Math.max(20, rect.left + 20));
                 pointer.style.top = `${topPos}px`;
@@ -846,7 +1128,6 @@
             document.getElementById('readiness-text').innerText = '98%';
             document.getElementById('readiness-text').className = 'text-xs font-mono font-bold text-emerald-700';
 
-            // Update Circuit Breaker Status
             const cbBadge = document.getElementById('circuit-breaker-status');
             if (cbBadge) {
                 cbBadge.className = 'text-xs font-mono bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold';
@@ -865,7 +1146,7 @@
             });
             const list = document.getElementById('tacit-notes-list');
             list.innerHTML += `
-                <div class="p-2 rounded bg-slate-50 border border-slate-200 text-[11px] text-slate-700 flex justify-between items-center">
+                <div class="p-2 rounded-lg bg-slate-50 border border-slate-200 text-[11px] text-slate-700 flex justify-between items-center">
                     <span>${val}</span>
                     <span class="text-slate-400 font-mono">Just now</span>
                 </div>
@@ -930,7 +1211,7 @@
             list.innerHTML = '';
             data.first_30_days_tasks.forEach(item => {
                 list.innerHTML += `
-                    <div class="p-2.5 rounded bg-slate-50 border border-slate-200 text-xs flex items-center justify-between">
+                    <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-xs flex items-center justify-between">
                         <span class="font-bold text-blue-700 font-mono">${item.day}</span>
                         <span class="text-slate-800">${item.task}</span>
                     </div>
@@ -957,7 +1238,7 @@
             // Append User Message Bubble
             chatWindow.innerHTML += `
                 <div class="flex gap-2.5 justify-end items-start">
-                    <div class="bg-blue-600 text-white rounded-lg p-2.5 max-w-[85%] text-xs leading-relaxed shadow-xs">
+                    <div class="bg-blue-600 text-white rounded-xl p-2.5 max-w-[85%] text-xs leading-relaxed shadow-xs">
                         ${escapeHTML(q)}
                     </div>
                     <div class="w-6 h-6 rounded-full bg-slate-200 flex-shrink-0 flex items-center justify-center text-slate-700 text-[10px] font-bold">
@@ -996,7 +1277,6 @@
                     `;
                 }
 
-                // Confidence Tag
                 const confTag = data.grounded 
                     ? `<span class="text-[10px] font-mono text-emerald-700 font-bold bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">Grounded (${Math.round((data.confidence || 0.95)*100)}%)</span>`
                     : `<span class="text-[10px] font-mono text-rose-700 font-bold bg-rose-50 px-1.5 py-0.5 rounded border border-rose-200">Refusal to Hallucinate</span>`;
@@ -1007,7 +1287,7 @@
                         <div class="w-6 h-6 rounded-full bg-indigo-600 flex-shrink-0 flex items-center justify-center text-white text-[10px] font-bold">
                             AI
                         </div>
-                        <div class="bg-white border border-slate-200 rounded-lg p-2.5 shadow-2xs max-w-[88%] text-slate-800 leading-relaxed text-xs">
+                        <div class="bg-white border border-slate-200 rounded-xl p-3 shadow-2xs max-w-[88%] text-slate-800 leading-relaxed text-xs">
                             <div class="flex items-center justify-between mb-1.5">
                                 <span class="font-bold text-slate-900">ContinuumAI Grounded Answer</span>
                                 ${confTag}
@@ -1070,7 +1350,7 @@
             let contentHTML = '';
             if (type === 'sanitizer') {
                 contentHTML = `
-                    <div class="p-3 bg-slate-900 text-slate-200 rounded-lg font-mono text-xs space-y-2">
+                    <div class="p-3 bg-slate-900 text-slate-200 rounded-xl font-mono text-xs space-y-2">
                         <div class="text-emerald-400 font-bold">// Microsoft Presidio + Deterministic Regex Sanitization Log:</div>
                         <div>[2026-05-18] Pattern matched: STRIPE_SECRET_KEY -> Replaced with [REDACTED_STRIPE_SECRET_KEY]</div>
                         <div>[2026-07-22] Pattern matched: AWS_ACCESS_KEY_ID -> Replaced with [REDACTED_AWS_CREDENTIAL]</div>
@@ -1080,11 +1360,11 @@
                 `;
             } else {
                 contentHTML = `
-                    <div class="p-3 bg-white rounded border border-slate-200">
+                    <div class="p-3 bg-white rounded-xl border border-slate-200">
                         <div class="font-bold text-slate-900 mb-1">Dataset Summary:</div>
-                        <p class="text-slate-600">Simulated 6-Month Enterprise Digital Exhaust containing 45 Git commits, 20 pull requests, and 80 Slack messages with 3 injected architectural conflicts for testing.</p>
+                        <p class="text-slate-600 leading-relaxed">Simulated 6-Month Enterprise Digital Exhaust containing 45 Git commits, 20 pull requests, and 80 Slack messages with 3 injected architectural conflicts for testing.</p>
                     </div>
-                    <div class="p-3 bg-blue-50 border border-blue-200 text-blue-900 rounded font-mono text-[11px]">
+                    <div class="p-3 bg-blue-50 border border-blue-200 text-blue-900 rounded-lg font-mono text-[11px]">
                         Available via REST Endpoint: GET /api/sources
                     </div>
                 `;
@@ -1096,6 +1376,151 @@
 
         function closeInspectorModal() {
             document.getElementById('inspector-modal').classList.add('hidden');
+        }
+
+        // ====================================================================
+        // 7. CUSTOM INGESTION MODAL
+        // ====================================================================
+        function openCustomIngestModal() {
+            document.getElementById('custom-ingest-modal').classList.remove('hidden');
+        }
+
+        function closeCustomIngestModal() {
+            document.getElementById('custom-ingest-modal').classList.add('hidden');
+        }
+
+        function loadPresetProfile(type) {
+            if (type === 'healthcare') {
+                document.getElementById('custom-commits-input').value = "ADR-002: Approve custom JWT session cookies for HIPAA isolation\nfeat(cache): deploy Redis cluster for distributed locking";
+                document.getElementById('custom-slack-input').value = "Alex: Should we deprecate Memcached for Redis cluster?\nPrince: Yes, merged in PR #42.";
+                document.getElementById('active-profile-label').innerText = 'Enterprise Healthcare (Standard)';
+            } else if (type === 'fintech') {
+                document.getElementById('custom-commits-input').value = "feat(stripe): add webhook signature validation with rotating secrets\nfeat(plaid): connect OAuth exchange for ACH settlement";
+                document.getElementById('custom-slack-input').value = "Lead: Remember to sanitize Stripe sk_live keys in staging\nDev: Approved in PR #108.";
+                document.getElementById('active-profile-label').innerText = 'Fintech Payment Gateway';
+            } else if (type === 'ai_agent') {
+                document.getElementById('custom-commits-input').value = "feat(rag): integrate ChromaDB vector index with grounded citation pins\nfeat(langgraph): implement multi-agent supervisor graph";
+                document.getElementById('custom-slack-input').value = "AI Lead: Ensure LLM refuses ungrounded queries\nResearcher: Configured confidence cutoff threshold at 0.85.";
+                document.getElementById('active-profile-label').innerText = 'Autonomous AI Agent System';
+            }
+        }
+
+        async function submitCustomIngestion() {
+            const commits = document.getElementById('custom-commits-input').value;
+            const slack = document.getElementById('custom-slack-input').value;
+
+            const res = await fetch('/api/ingest_custom', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ commits_text: commits, slack_text: slack })
+            });
+            const data = await res.json();
+            closeCustomIngestModal();
+            alert(`Custom Telemetry Ingested!\n${data.total_commits} commits indexed, ${data.redactions_applied} secrets redacted by Presidio.`);
+            switchTab('tab-reconstruct');
+        }
+
+        // ====================================================================
+        // 8. CERTIFICATE VERIFIER MODAL
+        // ====================================================================
+        function openCertVerifyModal() {
+            document.getElementById('cert-verify-modal').classList.remove('hidden');
+        }
+
+        function closeCertVerifyModal() {
+            document.getElementById('cert-verify-modal').classList.add('hidden');
+        }
+
+        async function runVerifyCertCheck() {
+            const hash = document.getElementById('verify-hash-input').value.trim();
+            if (!hash) return;
+
+            const res = await fetch('/api/verify_cert/' + hash);
+            const data = await res.json();
+            const out = document.getElementById('verify-cert-result');
+
+            if (data.valid) {
+                out.className = 'p-4 rounded-xl bg-emerald-50 border border-emerald-300 text-xs font-mono space-y-2 text-emerald-950';
+                out.innerHTML = `
+                    <div class="font-bold flex items-center gap-1.5 text-emerald-800">
+                        <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600"></i>
+                        <span>STATUS: ${data.status}</span>
+                    </div>
+                    <div>Signer: ${data.signature.signer_name} (${data.signature.signer_role})</div>
+                    <div>Audit Block: ${data.signature.audit_ledger_block}</div>
+                    <div class="text-[11px] text-emerald-700">${data.message}</div>
+                `;
+            } else {
+                out.className = 'p-4 rounded-xl bg-rose-50 border border-rose-300 text-xs font-mono space-y-2 text-rose-950';
+                out.innerHTML = `
+                    <div class="font-bold flex items-center gap-1.5 text-rose-800">
+                        <i data-lucide="alert-circle" class="w-4 h-4 text-rose-600"></i>
+                        <span>STATUS: INVALID_OR_NOT_FOUND</span>
+                    </div>
+                    <div class="text-[11px] text-rose-700">${data.message}</div>
+                `;
+            }
+            lucide.createIcons();
+        }
+
+        // ====================================================================
+        // 9. ROI CALCULATOR MODAL
+        // ====================================================================
+        function openRoiModal() {
+            document.getElementById('roi-modal').classList.remove('hidden');
+            calculateROI();
+        }
+
+        function closeRoiModal() {
+            document.getElementById('roi-modal').classList.add('hidden');
+        }
+
+        function calculateROI() {
+            const team = parseInt(document.getElementById('roi-team-slider').value);
+            const turnover = parseInt(document.getElementById('roi-turnover-slider').value);
+            const rate = parseInt(document.getElementById('roi-rate-slider').value);
+
+            document.getElementById('roi-team-val').innerText = `${team} Engineers`;
+            document.getElementById('roi-turnover-val').innerText = `${turnover} Developers/Year`;
+            document.getElementById('roi-rate-val').innerText = `$${rate}/hour`;
+
+            // Formula: 3 weeks (120 hrs) saved per departure * rate * turnover
+            const saved = turnover * 120 * rate;
+            document.getElementById('roi-total-saved').innerText = `$${saved.toLocaleString()} / yr`;
+        }
+
+        // ====================================================================
+        // 10. EXPORT BRIEFING MODAL
+        // ====================================================================
+        async function exportHandoverMarkdown() {
+            const res = await fetch('/api/export/markdown');
+            const data = await res.json();
+            document.getElementById('export-markdown-content').value = data.content;
+            document.getElementById('copy-success-badge').classList.add('hidden');
+            document.getElementById('export-modal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function closeExportModal() {
+            document.getElementById('export-modal').classList.add('hidden');
+        }
+
+        function copyExportMarkdown() {
+            const text = document.getElementById('export-markdown-content').value;
+            navigator.clipboard.writeText(text);
+            const badge = document.getElementById('copy-success-badge');
+            badge.classList.remove('hidden');
+            setTimeout(() => badge.classList.add('hidden'), 2500);
+        }
+
+        function downloadExportFile() {
+            const text = document.getElementById('export-markdown-content').value;
+            const blob = new Blob([text], { type: 'text/markdown' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'ContinuumAI-Handover-Briefing.md';
+            a.click();
         }
 
         function escapeHTML(str) {

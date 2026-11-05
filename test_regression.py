@@ -320,5 +320,41 @@ def test_14_server_microservice_direct_endpoints():
     assert res_ask.status_code == 200
     assert "Redlock" in res_ask.json()["answer"] or "locking" in res_ask.json()["answer"]
 
+def test_15_enterprise_export_and_cert_verification():
+    """Validates markdown handover export and public SHA-256 certificate verification."""
+    # Test Markdown Export
+    res_exp_md = client_app.get("/api/export/markdown")
+    assert res_exp_md.status_code == 200
+    assert "Project Handover & Continuity Briefing" in res_exp_md.json()["content"]
+    assert "First 30 Days Actionable Continuity Checklist" in res_exp_md.json()["content"]
+
+    # Test JSON Export
+    res_exp_json = client_app.get("/api/export/json")
+    assert res_exp_json.status_code == 200
+    assert "ContinuumAI Handover OS" in res_exp_json.json()["platform"]
+
+    # Test Sign and Verify Cert
+    res_sign = client_app.post("/api/sign", json={
+        "signer_name": "Prince Kumar",
+        "signer_role": "Team Lead & AI Architect"
+    })
+    cert_hash = res_sign.json()["certificate_hash"]
+    
+    res_verify = client_app.get(f"/api/verify_cert/{cert_hash}")
+    assert res_verify.status_code == 200
+    assert res_verify.json()["valid"] is True
+    assert "Prince Kumar" in res_verify.json()["signature"]["signer_name"]
+
+def test_16_custom_telemetry_ingestion_and_sanitization():
+    """Validates custom user telemetry ingestion with Presidio secret scrubbing."""
+    custom_payload = {
+        "commits_text": "feat(secret): test sk_mock_stripe_key_111122223333 commit",
+        "slack_text": "Lead: Our confidential client is Alex"
+    }
+    res_ingest = client_app.post("/api/ingest_custom", json=custom_payload)
+    assert res_ingest.status_code == 200
+    assert res_ingest.json()["status"] == "success"
+    assert res_ingest.json()["redactions_applied"] >= 1
+
 if __name__ == "__main__":
     pytest.main(["-v", __file__])
